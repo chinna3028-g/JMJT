@@ -33,7 +33,6 @@ public class BasicController
 	public BasicsDto findAll() {
 		List<Basic> basics = basicService.findAll();
 		List<BasicDto> basicDtos = basicMapper.map(basics);
-		//Test Comments
 		return new BasicsDto(basicDtos);
 	}
 	
