@@ -1,19 +1,17 @@
 package com.jmjt.mapper;
 
-import com.jmjt.dto.BasicDto;
-import com.jmjt.mapper.BasicMapper;
-import com.jmjt.model.Basic;
-import com.jmjt.request.CreateRequest;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.Collections;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Collections;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import com.jmjt.dto.BasicDto;
+import com.jmjt.model.Basic;
+import com.jmjt.request.CreateRequest;
 
 @SpringBootTest
 public class BasicMapperTest {
