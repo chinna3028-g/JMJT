@@ -1,11 +1,11 @@
 package com.jmjt.initializer;
-/*package com.jmjt.demo.initializer;
 
-import com.jmjt.demo.model.Basic;
-import com.jmjt.demo.service.BasicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+
+import com.jmjt.model.Basic;
+import com.jmjt.service.BasicService;
 
 @Component
 public class BasicInitializer implements CommandLineRunner {
@@ -20,4 +20,3 @@ public class BasicInitializer implements CommandLineRunner {
         basicService.save(basic);
     }
 }
-*/
