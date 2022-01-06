@@ -1,13 +1,13 @@
 package com.jmjt.mapper;
 
-import com.jmjt.dto.BasicDto;
-import com.jmjt.model.Basic;
-import com.jmjt.request.CreateRequest;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import com.jmjt.dto.BasicDto;
+import com.jmjt.model.Basic;
+import com.jmjt.request.CreateRequest;
 
 @Component
 public class BasicMapper {
@@ -33,10 +33,9 @@ public class BasicMapper {
     }
 
     public List<BasicDto> map(List<Basic> basics) {
-		return null;
-       /* return basics
+      return basics
                 .stream()
                 .map(basic -> map(basic))
-                .collect(Collectors.toList());*/
+                .collect(Collectors.toList());
     }
 }

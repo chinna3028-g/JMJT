@@ -56,7 +56,7 @@ public class BasicMapperTest {
         assertEquals(basic.getName(), createRequest.getName());
     }
 
-   // @Test
+    @Test
     public void should_mao_basics_to_basicDtos() {
         //Given
         Basic basic = givenBasic();
@@ -64,7 +64,7 @@ public class BasicMapperTest {
         //When
         List<BasicDto> basicDtos = basicMapper.map(basics);
         //Then
-       // assertEquals(basics.size(), basicDtos.size());
+        assertEquals(basics.size(), basicDtos.size());
         assertEquals(basicDtos.get(0).getId(), basics.get(0).getId());
         assertEquals(basicDtos.get(0).getName(), basics.get(0).getName());
     }
