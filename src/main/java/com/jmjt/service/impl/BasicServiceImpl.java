@@ -21,7 +21,7 @@ public class BasicServiceImpl implements BasicService {
 
 	public Basic findById(int id) {
 		Optional<Basic> basic = basicRepository.findById(id);
-		if (basic.isPresent()) {
+		if (!basic.isPresent()) {
 			return null;
 		}
 		return basic.get();

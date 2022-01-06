@@ -1,21 +1,20 @@
 package com.jmjt.mapper;
 
-import com.jmjt.dto.BasicDto;
-import com.jmjt.mapper.BasicMapper;
-import com.jmjt.model.Basic;
-import com.jmjt.request.CreateRequest;
-
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import static org.junit.Assert.assertEquals;
+import org.mockito.InjectMocks;
+import org.springframework.test.context.junit4.SpringRunner;
 
-@SpringBootTest
+import com.jmjt.dto.BasicDto;
+import com.jmjt.model.Basic;
+import com.jmjt.request.CreateRequest;
+
+@RunWith(SpringRunner.class)
 public class BasicMapperTest {
 
     private static final int ID = 1;
@@ -29,6 +28,7 @@ public class BasicMapperTest {
         //Given
         Basic basic = givenBasic();
         //When
+        
         BasicDto basicDto = basicMapper.map(basic);
         //Then
         assertEquals(basic.getId(), basicDto.getId());
@@ -56,7 +56,7 @@ public class BasicMapperTest {
         assertEquals(basic.getName(), createRequest.getName());
     }
 
-   // @Test
+    @Test
     public void should_mao_basics_to_basicDtos() {
         //Given
         Basic basic = givenBasic();
@@ -64,7 +64,7 @@ public class BasicMapperTest {
         //When
         List<BasicDto> basicDtos = basicMapper.map(basics);
         //Then
-       // assertEquals(basics.size(), basicDtos.size());
+        assertEquals(basics.size(), basicDtos.size());
         assertEquals(basicDtos.get(0).getId(), basics.get(0).getId());
         assertEquals(basicDtos.get(0).getName(), basics.get(0).getName());
     }
