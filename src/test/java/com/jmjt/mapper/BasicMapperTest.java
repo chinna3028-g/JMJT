@@ -1,19 +1,20 @@
 package com.jmjt.mapper;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import static org.junit.Assert.assertEquals;
 import org.mockito.InjectMocks;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import com.jmjt.dto.BasicDto;
 import com.jmjt.model.Basic;
 import com.jmjt.request.CreateRequest;
 
-@SpringBootTest
+@RunWith(SpringRunner.class)
 public class BasicMapperTest {
 
     private static final int ID = 1;
@@ -27,6 +28,7 @@ public class BasicMapperTest {
         //Given
         Basic basic = givenBasic();
         //When
+        
         BasicDto basicDto = basicMapper.map(basic);
         //Then
         assertEquals(basic.getId(), basicDto.getId());
