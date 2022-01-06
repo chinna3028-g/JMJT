@@ -117,27 +117,4 @@ public class BasicControllerTest {
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 	}
 
-	/*@Test
-	public void testUpdateNull() throws Exception {
-
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/r").accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON).content(val2);
-		Mockito.when(basicMapper.mapBasicDto(ArgumentMatchers.any())).thenReturn(new Basic());
-		Mockito.when(basicService.update(ArgumentMatchers.any())).thenReturn(null);
-		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
-		MockHttpServletResponse response = mvcResult.getResponse();
-		assertEquals(HttpStatus.OK.value(), response.getStatus());
-	}
-
-	@Test
-	public void testUpdate() throws Exception {
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/r").accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON).content(val2);
-		Mockito.when(basicMapper.mapBasicDto(ArgumentMatchers.any())).thenReturn(new Basic());
-		Mockito.when(basicService.update(ArgumentMatchers.any())).thenReturn(new Basic());
-		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
-		MockHttpServletResponse response = mvcResult.getResponse();
-		assertEquals(HttpStatus.OK.value(), response.getStatus());
-	}
-*/
 }
