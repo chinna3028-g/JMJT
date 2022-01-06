@@ -2,6 +2,8 @@ package com.jmjt.mapper;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +23,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.jmjt.controller.BasicController;
+import com.jmjt.dto.BasicDto;
 import com.jmjt.model.Basic;
 import com.jmjt.service.BasicService;
 
@@ -35,6 +38,7 @@ public class BasicControllerTest {
 	private BasicMapper basicMapper;
 
 	private MockMvc mockMvc;
+
 	@Before
 	public void init() {
 		MockitoAnnotations.initMocks(this);
@@ -42,27 +46,98 @@ public class BasicControllerTest {
 	}
 
 	private String val1 = "{\r\n" + "\"name\":\"deepak\"\r\n" + "}";
+	private String val2 = "{\r\n" + "\"name\":\"deepak\",\r\n" + "\"id\",1\r\n" + "}";
 
 	@Test
-	public void testRenewNull() throws Exception {
+	public void testSaveNull() throws Exception {
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/r").accept(MediaType.APPLICATION_JSON)
-				.header("api-version", 1).contentType(MediaType.APPLICATION_JSON).content(val1);
+				.contentType(MediaType.APPLICATION_JSON).content(val1);
 		Mockito.when(basicMapper.mapCreateRequest(ArgumentMatchers.any())).thenReturn(new Basic());
 		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 		MockHttpServletResponse response = mvcResult.getResponse();
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 	}
+
 	@Test
-	public void testRenew() throws Exception {
+	public void testSave() throws Exception {
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/r").accept(MediaType.APPLICATION_JSON)
-				.header("api-version", 1).contentType(MediaType.APPLICATION_JSON).content(val1);
+				.contentType(MediaType.APPLICATION_JSON).content(val1);
 		Mockito.when(basicMapper.mapCreateRequest(ArgumentMatchers.any())).thenReturn(new Basic());
-		Mockito.when(basicService.save(ArgumentMatchers.any())).thenReturn(new Basic() );
+		Mockito.when(basicService.save(ArgumentMatchers.any())).thenReturn(new Basic());
 		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 		MockHttpServletResponse response = mvcResult.getResponse();
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 	}
 
+	@Test
+	public void testFindAll() throws Exception {
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/r").accept(MediaType.APPLICATION_JSON);
+		Mockito.when(basicMapper.map(ArgumentMatchers.any())).thenReturn(new ArrayList<BasicDto>());
+		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+		MockHttpServletResponse response = mvcResult.getResponse();
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+	}
+
+	@Test
+	public void findByIdTest() throws Exception {
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/r/1").accept(MediaType.APPLICATION_JSON);
+		Mockito.when(basicService.findById(ArgumentMatchers.anyInt())).thenReturn(new Basic());
+		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+		MockHttpServletResponse response = mvcResult.getResponse();
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+	}
+
+	@Test
+	public void findByIdNullTest() throws Exception {
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/r/1").accept(MediaType.APPLICATION_JSON);
+		Mockito.when(basicService.findById(ArgumentMatchers.anyInt())).thenReturn(null);
+		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+		MockHttpServletResponse response = mvcResult.getResponse();
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+	}
+
+	@Test
+	public void deleteByIdTest() throws Exception {
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/r/1").accept(MediaType.APPLICATION_JSON);
+		Mockito.when(basicService.deleteById(ArgumentMatchers.anyInt())).thenReturn(new Basic());
+		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+		MockHttpServletResponse response = mvcResult.getResponse();
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+	}
+
+	@Test
+	public void deleteByIdNullTest() throws Exception {
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/r/1").accept(MediaType.APPLICATION_JSON)
+				.header("api-version", 1);
+		Mockito.when(basicService.deleteById(ArgumentMatchers.anyInt())).thenReturn(null);
+		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+		MockHttpServletResponse response = mvcResult.getResponse();
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+	}
+
+	/*@Test
+	public void testUpdateNull() throws Exception {
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/r").accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON).content(val2);
+		Mockito.when(basicMapper.mapBasicDto(ArgumentMatchers.any())).thenReturn(new Basic());
+		Mockito.when(basicService.update(ArgumentMatchers.any())).thenReturn(null);
+		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+		MockHttpServletResponse response = mvcResult.getResponse();
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+	}
+
+	@Test
+	public void testUpdate() throws Exception {
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/r").accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON).content(val2);
+		Mockito.when(basicMapper.mapBasicDto(ArgumentMatchers.any())).thenReturn(new Basic());
+		Mockito.when(basicService.update(ArgumentMatchers.any())).thenReturn(new Basic());
+		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+		MockHttpServletResponse response = mvcResult.getResponse();
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+	}
+*/
 }

@@ -31,19 +31,21 @@ public class BasicController
 	private BasicMapper basicMapper;
 	
 	@GetMapping("")
-	public BasicsDto findAll() {
+	public ResponseEntity<BasicsDto> findAll() {
 		List<Basic> basics = basicService.findAll();
 		List<BasicDto> basicDtos = basicMapper.map(basics);
-		return new BasicsDto(basicDtos);
+	//	return new BasicsDto(basicDtos);
+		return ResponseEntity.status(200).body( new BasicsDto(basicDtos));
 	}
 	
 	@GetMapping("/{id}")
-	public BasicDto findById(@PathVariable int id) {
+	public ResponseEntity<BasicDto> findById(@PathVariable int id) {
 		Basic basic = basicService.findById(id);
 		if(basic == null) {
 			return null;
 		}
-		return basicMapper.mapBasic(basic);
+		//return basicMapper.mapBasic(basic);
+		return ResponseEntity.status(200).body( basicMapper.mapBasic(basic));
 	}
 	
 	@PostMapping("")
@@ -58,21 +60,22 @@ public class BasicController
 	}
 	
 	@DeleteMapping("/{id}")
-	public BasicDto deleteById(@PathVariable int id) {
+	public ResponseEntity<BasicDto> deleteById(@PathVariable int id) {
 		Basic basic = basicService.deleteById(id);
 		if(basic == null) {
 			return null;
 		}
-		return basicMapper.mapBasic(basic);
+		return ResponseEntity.status(200).body(basicMapper.mapBasic(basic));
+		
 	}
 
-	@PutMapping("")
-	public BasicDto update(@RequestBody BasicDto basicDto) {
+	/*@PutMapping("")
+	public ResponseEntity<BasicDto> update(@RequestBody BasicDto basicDto) {
 		Basic basic = basicMapper.mapBasicDto(basicDto);
 		basic = basicService.update(basic);
 		if(basic == null) {
 			return null;
 		}
-		return basicMapper.mapBasic(basic);
-	}
+		return ResponseEntity.status(200).body(basicMapper.mapBasic(basic));
+	}*/
 }
