@@ -29,7 +29,7 @@ public class BasicMapperTest {
         Basic basic = givenBasic();
         //When
         
-        BasicDto basicDto = basicMapper.map(basic);
+        BasicDto basicDto = basicMapper.mapBasic(basic);
         //Then
         assertEquals(basic.getId(), basicDto.getId());
         assertEquals(basic.getName(), basicDto.getName());
@@ -40,7 +40,7 @@ public class BasicMapperTest {
         //Given
         BasicDto basicDto = givenBasicDto();
         //When
-        Basic basic = basicMapper.map(basicDto);
+        Basic basic = basicMapper.mapBasicDto(basicDto);
         //Then
         assertEquals(basic.getId(), basicDto.getId());
         assertEquals(basic.getName(), basicDto.getName());
@@ -51,7 +51,7 @@ public class BasicMapperTest {
         //Given
         CreateRequest createRequest = givenCreateRequest();
         //When
-        Basic basic = basicMapper.map(createRequest);
+        Basic basic = basicMapper.mapCreateRequest(createRequest);
         //Then
         assertEquals(basic.getName(), createRequest.getName());
     }

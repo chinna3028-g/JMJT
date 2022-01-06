@@ -3,6 +3,7 @@ package com.jmjt.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +21,7 @@ import com.jmjt.request.CreateRequest;
 import com.jmjt.service.BasicService;
 
 @RestController
-@RequestMapping("/basics")
+@RequestMapping("/r")
 public class BasicController 
 {
 	@Autowired
@@ -42,17 +43,18 @@ public class BasicController
 		if(basic == null) {
 			return null;
 		}
-		return basicMapper.map(basic);
+		return basicMapper.mapBasic(basic);
 	}
 	
 	@PostMapping("")
-	public BasicDto save(@RequestBody CreateRequest createRequest) {
-		Basic basic = basicMapper.map(createRequest);
+	public ResponseEntity<BasicDto> save(@RequestBody CreateRequest createRequest) {
+		Basic basic = basicMapper.mapCreateRequest(createRequest);
 		basic = basicService.save(basic);
 		if(basic == null) {
 			return null;
 		}
-		return basicMapper.map(basic);
+		 BasicDto basicDto = basicMapper.mapBasic(basic);
+		 return ResponseEntity.status(200).body(basicDto);
 	}
 	
 	@DeleteMapping("/{id}")
@@ -61,16 +63,16 @@ public class BasicController
 		if(basic == null) {
 			return null;
 		}
-		return basicMapper.map(basic);
+		return basicMapper.mapBasic(basic);
 	}
 
 	@PutMapping("")
 	public BasicDto update(@RequestBody BasicDto basicDto) {
-		Basic basic = basicMapper.map(basicDto);
+		Basic basic = basicMapper.mapBasicDto(basicDto);
 		basic = basicService.update(basic);
 		if(basic == null) {
 			return null;
 		}
-		return basicMapper.map(basic);
+		return basicMapper.mapBasic(basic);
 	}
 }

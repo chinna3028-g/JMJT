@@ -12,21 +12,21 @@ import com.jmjt.request.CreateRequest;
 @Component
 public class BasicMapper {
 
-    public BasicDto map(Basic basic) {
+    public BasicDto mapBasic(Basic basic) {
         BasicDto basicDto = new BasicDto();
         basicDto.setId(basic.getId());
         basicDto.setName(basic.getName());
         return basicDto;
     }
 
-    public Basic map(BasicDto basicDto) {
+    public Basic mapBasicDto(BasicDto basicDto) {
         Basic basic = new Basic();
         basic.setId(basicDto.getId());
         basic.setName(basicDto.getName());
         return basic;
     }
 
-    public Basic map(CreateRequest createRequest) {
+    public Basic mapCreateRequest(CreateRequest createRequest) {
         Basic basic = new Basic();
         basic.setName(createRequest.getName());
         return basic;
@@ -35,7 +35,7 @@ public class BasicMapper {
     public List<BasicDto> map(List<Basic> basics) {
       return basics
                 .stream()
-                .map(basic -> map(basic))
+                .map(basic -> mapBasic(basic))
                 .collect(Collectors.toList());
     }
 }
