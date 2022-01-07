@@ -98,14 +98,4 @@ public class BasicServiceImplTest {
 		assertEquals(1, mockBasic.getId());
 	}
 
-	@Test(expected=NotFoundException.class)
-	public void updateNullTest() throws NotFoundException {
-		Basic basic = new Basic();
-		basic.setId(1);
-		Optional<Basic> basicOpt = Optional.empty();
-		Mockito.when(basicRepository.findById(ArgumentMatchers.anyInt())).thenReturn(basicOpt);
-
-		Mockito.when(basicRepository.save(ArgumentMatchers.any())).thenReturn(basic);
-		 basicServiceImpl.update(basic);
-	}
 }

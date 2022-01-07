@@ -1,4 +1,4 @@
-package com.jmjt.mapper;
+package com.jmjt.controller;
 
 import static org.junit.Assert.assertEquals;
 
@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.jmjt.controller.BasicController;
 import com.jmjt.dto.BasicDto;
+import com.jmjt.mapper.BasicMapper;
 import com.jmjt.model.Basic;
 import com.jmjt.service.BasicService;
 
@@ -46,7 +47,6 @@ public class BasicControllerTest {
 	}
 
 	private String val1 = "{\r\n" + "\"name\":\"deepak\"\r\n" + "}";
-	private String val2 = "{\r\n" + "\"name\":\"deepak\",\r\n" + "\"id\",1\r\n" + "}";
 
 	@Test
 	public void testSaveNull() throws Exception {
