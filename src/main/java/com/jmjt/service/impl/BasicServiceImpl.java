@@ -7,11 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jmjt.dao.BasicRepository;
+import com.jmjt.error.NotFoundException;
 import com.jmjt.model.Basic;
 import com.jmjt.service.BasicService;
 
+
 @Service
 public class BasicServiceImpl implements BasicService {
+	private final String ERROR_MSG="No data found"; 
 	@Autowired
 	private BasicRepository basicRepository;
 
@@ -21,38 +24,32 @@ public class BasicServiceImpl implements BasicService {
 	}
 
 	@Override
-	public Basic findById(int id) {
+	public Basic findById(int id) throws NotFoundException {
 		Optional<Basic> basic = basicRepository.findById(id);
 		if (!basic.isPresent()) {
-			return null;
+			throw new NotFoundException(ERROR_MSG);
 		}
 		return basic.get();
 	}
 
 	@Override
-	public Basic save(Basic basic) {
+	public Basic save(Basic basic) throws NotFoundException {
 		if (basic.getId() == 0) {
-			return null;
+			throw new NotFoundException(ERROR_MSG);
 		}
 		return basicRepository.save(basic);
 	}
 
 	@Override
-	public Basic deleteById(int id) {
+	public Basic deleteById(int id) throws NotFoundException {
 		Basic basic = findById(id);
-		if (basic == null) {
-			return null;
-		}
 		basicRepository.deleteById(id);
 		return basic;
 	}
 
 	@Override
-	public Basic update(Basic basic) {
+	public Basic update(Basic basic) throws NotFoundException {
 		basic = findById(basic.getId());
-		if (basic == null) {
-			return null;
-		}
 		return basicRepository.save(basic);
 	}
 }

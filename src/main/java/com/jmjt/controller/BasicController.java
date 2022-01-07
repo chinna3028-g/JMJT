@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jmjt.dto.BasicDto;
 import com.jmjt.dto.BasicsDto;
+import com.jmjt.error.NotFoundException;
 import com.jmjt.mapper.BasicMapper;
 import com.jmjt.model.Basic;
 import com.jmjt.request.CreateRequest;
@@ -39,7 +40,7 @@ public class BasicController
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<BasicDto> findById(@PathVariable int id) {
+	public ResponseEntity<BasicDto> findById(@PathVariable int id) throws NotFoundException {
 		Basic basic = basicService.findById(id);
 		if(basic == null) {
 			return null;
@@ -48,7 +49,7 @@ public class BasicController
 	}
 	
 	@PostMapping("")
-	public ResponseEntity<BasicDto> save(@RequestBody CreateRequest createRequest) {
+	public ResponseEntity<BasicDto> save(@RequestBody CreateRequest createRequest) throws NotFoundException {
 		Basic basic = basicMapper.mapCreateRequest(createRequest);
 		basic = basicService.save(basic);
 		if(basic == null) {
@@ -59,7 +60,7 @@ public class BasicController
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<BasicDto> deleteById(@PathVariable int id) {
+	public ResponseEntity<BasicDto> deleteById(@PathVariable int id) throws NotFoundException {
 		Basic basic = basicService.deleteById(id);
 		if(basic == null) {
 			return null;

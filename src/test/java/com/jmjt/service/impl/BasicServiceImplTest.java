@@ -1,8 +1,6 @@
 package com.jmjt.service.impl;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -21,7 +19,9 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import com.jmjt.dao.BasicRepository;
+import com.jmjt.error.NotFoundException;
 import com.jmjt.model.Basic;
+
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class BasicServiceImplTest {
@@ -45,32 +45,29 @@ public class BasicServiceImplTest {
 	}
 
 	@Test
-	public void findByIdTest() {
+	public void findByIdTest() throws NotFoundException {
 		Optional<Basic> basic = Optional.of(new Basic());
 		Mockito.when(basicRepository.findById(ArgumentMatchers.anyInt())).thenReturn(basic);
-		Basic mockBasic = basicServiceImpl.findById(1);
-		assertNotNull(mockBasic);
+		 basicServiceImpl.findById(1);
 	}
 
-	@Test
-	public void findByIdNullTest() {
+	@Test(expected=NotFoundException.class)
+	public void findByIdNullTest() throws NotFoundException {
 		Optional<Basic> basic = Optional.empty();
 		Mockito.when(basicRepository.findById(ArgumentMatchers.anyInt())).thenReturn(basic);
-		Basic mockBasic = basicServiceImpl.findById(1);
-		assertNull(mockBasic);
+		 basicServiceImpl.findById(1);
 
 	}
 
-	@Test
-	public void saveNullTest() {
+	@Test(expected=NotFoundException.class)
+	public void saveNullTest() throws NotFoundException {
 		Basic basic = new Basic();
 		basic.setId(0);
-		Basic mockBasic = basicServiceImpl.save(basic);
-		assertNull(mockBasic);
+		 basicServiceImpl.save(basic);
 	}
 
 	@Test
-	public void saveTest() {
+	public void saveTest() throws NotFoundException {
 		Basic basic = new Basic();
 		basic.setId(1);
 		Mockito.when(basicRepository.save(ArgumentMatchers.any())).thenReturn(basic);
@@ -79,7 +76,7 @@ public class BasicServiceImplTest {
 	}
 
 	@Test
-	public void deleteTest() {
+	public void deleteTest() throws NotFoundException {
 		Basic basic = new Basic();
 		basic.setId(1);
 		Optional<Basic> basicOpt = Optional.of(basic);
@@ -90,18 +87,7 @@ public class BasicServiceImplTest {
 	}
 
 	@Test
-	public void deleteNullTest() {
-		Basic basic = null;
-
-		Optional<Basic> basicOpt = Optional.empty();
-		Mockito.when(basicRepository.findById(ArgumentMatchers.anyInt())).thenReturn(basicOpt);
-
-		basic = basicServiceImpl.deleteById(1);
-		assertNull(basic);
-	}
-
-	@Test
-	public void UpdateTest() {
+	public void UpdateTest() throws NotFoundException {
 		Basic basic = new Basic();
 		basic.setId(1);
 		Optional<Basic> basicOpt = Optional.of(basic);
@@ -112,15 +98,14 @@ public class BasicServiceImplTest {
 		assertEquals(1, mockBasic.getId());
 	}
 
-	@Test
-	public void updateNullTest() {
+	@Test(expected=NotFoundException.class)
+	public void updateNullTest() throws NotFoundException {
 		Basic basic = new Basic();
 		basic.setId(1);
 		Optional<Basic> basicOpt = Optional.empty();
 		Mockito.when(basicRepository.findById(ArgumentMatchers.anyInt())).thenReturn(basicOpt);
 
 		Mockito.when(basicRepository.save(ArgumentMatchers.any())).thenReturn(basic);
-		Basic mockBasic = basicServiceImpl.update(basic);
-		assertNull(mockBasic);
+		 basicServiceImpl.update(basic);
 	}
 }
