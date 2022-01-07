@@ -33,7 +33,9 @@ public class BasicController
 	public ResponseEntity<BasicsDto> findAll() {
 		List<Basic> basics = basicService.findAll();
 		List<BasicDto> basicDtos = basicMapper.map(basics);
-		return ResponseEntity.status(200).body( new BasicsDto(basicDtos));
+		BasicsDto basicsDto = new BasicsDto();
+		basicsDto.setBasicDtos(basicDtos);
+		return ResponseEntity.status(200).body(basicsDto);
 	}
 	
 	@GetMapping("/{id}")

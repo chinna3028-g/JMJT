@@ -4,14 +4,6 @@ public class CreateRequest {
 
 	private String name;
 
-	public CreateRequest() {
-		super();
-	}
-
-	public CreateRequest(String name) {
-		super();
-		this.name = name;
-	}
 
 	public String getName() {
 		return name;
