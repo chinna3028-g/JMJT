@@ -1,6 +1,7 @@
 package com.jmjt.service.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -20,15 +21,22 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import com.jmjt.dao.BasicRepository;
 import com.jmjt.error.NotFoundException;
+import com.jmjt.mapper.Mapper;
 import com.jmjt.model.Basic;
-
+import com.jmjt.request.CreateRequest;
+import com.jmjt.request.UpdateRequest;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class BasicServiceImplTest {
+
 	@InjectMocks
 	private BasicServiceImpl basicServiceImpl;
+
 	@Mock
 	private BasicRepository basicRepository;
+
+	@Mock
+	private Mapper basicMapper;
 
 	@Before
 	public void init() throws NoSuchAlgorithmException, InvalidKeySpecException {
@@ -48,30 +56,54 @@ public class BasicServiceImplTest {
 	public void findByIdTest() throws NotFoundException {
 		Optional<Basic> basic = Optional.of(new Basic());
 		Mockito.when(basicRepository.findById(ArgumentMatchers.anyInt())).thenReturn(basic);
-		 basicServiceImpl.findById(1);
+		basicServiceImpl.findById(1);
 	}
 
-	@Test(expected=NotFoundException.class)
+	@Test(expected = NotFoundException.class)
 	public void findByIdNullTest() throws NotFoundException {
 		Optional<Basic> basic = Optional.empty();
 		Mockito.when(basicRepository.findById(ArgumentMatchers.anyInt())).thenReturn(basic);
-		 basicServiceImpl.findById(1);
+		basicServiceImpl.findById(1);
 
-	}
-
-	@Test(expected=NotFoundException.class)
-	public void saveNullTest() throws NotFoundException {
-		Basic basic = new Basic();
-		basic.setId(0);
-		 basicServiceImpl.save(basic);
 	}
 
 	@Test
-	public void saveTest() throws NotFoundException {
+	public void saveNullTest() throws Exception {
+		CreateRequest cr = new CreateRequest();
+		cr.setName("NAME");
+		Basic basic = new Basic();
+		basic.setName("NAME");
+		basic.setId(0);
+		Mockito.when(basicMapper.mapCreateRequest(ArgumentMatchers.any())).thenReturn(basic);
+		assertNull(basicServiceImpl.save(cr));
+	}
+
+	@Test(expected = Exception.class)
+	public void saveExceptionTest() throws Exception {
+		CreateRequest cr = new CreateRequest();
+		cr.setName("NAME");
+		Basic basic = new Basic();
+		basic.setId(0);
+		basic.setName("NAME");
+		Mockito.when(basicMapper.mapCreateRequest(ArgumentMatchers.any())).thenReturn(basic);
+		Basic createBasic = basicMapper.mapCreateRequest(cr);
+		Mockito.when(basicRepository.save(ArgumentMatchers.any())).thenReturn(createBasic);
+
+		Basic mockBasic = basicServiceImpl.save(cr);
+		assertEquals(1, mockBasic.getId());
+	}
+
+	@Test
+	public void saveTest() throws Exception {
+		CreateRequest cr = new CreateRequest();
+		cr.setName("NAME");
 		Basic basic = new Basic();
 		basic.setId(1);
-		Mockito.when(basicRepository.save(ArgumentMatchers.any())).thenReturn(basic);
-		Basic mockBasic = basicServiceImpl.save(basic);
+		basic.setName("NAME");
+		Mockito.when(basicMapper.mapCreateRequest(ArgumentMatchers.any())).thenReturn(basic);
+		Basic createBasic = basicMapper.mapCreateRequest(cr);
+		Mockito.when(basicRepository.save(ArgumentMatchers.any())).thenReturn(createBasic);
+		Basic mockBasic = basicServiceImpl.save(cr);
 		assertEquals(1, mockBasic.getId());
 	}
 
@@ -88,13 +120,18 @@ public class BasicServiceImplTest {
 
 	@Test
 	public void UpdateTest() throws NotFoundException {
+		UpdateRequest ur = new UpdateRequest();
+		ur.setName("NAME");
 		Basic basic = new Basic();
+		basic.setName("NAME");
 		basic.setId(1);
-		Optional<Basic> basicOpt = Optional.of(basic);
+		Mockito.when(basicMapper.mapUpdateRequest(ArgumentMatchers.any())).thenReturn(basic);
+		Basic updateBasic = basicMapper.mapUpdateRequest(ur);
+		Optional<Basic> basicOpt = Optional.of(updateBasic);
 		Mockito.when(basicRepository.findById(ArgumentMatchers.anyInt())).thenReturn(basicOpt);
 
-		Mockito.when(basicRepository.save(ArgumentMatchers.any())).thenReturn(basic);
-		Basic mockBasic = basicServiceImpl.update(basic);
+		Mockito.when(basicRepository.save(ArgumentMatchers.any())).thenReturn(updateBasic);
+		Basic mockBasic = basicServiceImpl.update(ur);
 		assertEquals(1, mockBasic.getId());
 	}
 

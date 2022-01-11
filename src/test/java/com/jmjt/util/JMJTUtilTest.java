@@ -1,32 +1,37 @@
-package com.jmjt.initializer;
+package com.jmjt.util;
+
+import static org.junit.Assert.assertEquals;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.time.Instant;
+import java.util.Calendar;
+import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import com.jmjt.service.BasicService;
-
 @RunWith(MockitoJUnitRunner.Silent.class)
-public class BasicInitializerTest {
+public class JMJTUtilTest {
 
 	@InjectMocks
-	private BasicInitializer basicInitializer;
-	@Mock
-	private BasicService basicService;
+	JMJTUtil util;
 
 	@Before
 	public void init() throws NoSuchAlgorithmException, InvalidKeySpecException {
 		MockitoAnnotations.initMocks(this);
 	}
+
 	@Test
-	public void testRun() throws Exception {
-		basicInitializer.run("hello");
+	public void getFileNameTest() {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(Date.from(Instant.now()));
+		String fileName = "reports\\" + String.format("employeesReport-%1$tY-%1$tm-%1$td-%1$tk-%1$tS-%1$tp.txt", cal);
+		assertEquals(fileName, util.getFileName());
 	}
+
 }

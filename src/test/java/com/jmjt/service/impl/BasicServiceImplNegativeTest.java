@@ -22,6 +22,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import com.jmjt.dao.BasicRepository;
 import com.jmjt.error.NotFoundException;
 import com.jmjt.model.Basic;
+import com.jmjt.request.UpdateRequest;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class BasicServiceImplNegativeTest {
@@ -82,6 +83,9 @@ public class BasicServiceImplNegativeTest {
 		basic.setName("Chinna");
 		Mockito.when(basicRepository.findById(ArgumentMatchers.anyInt())).thenReturn(Optional.empty());
 		Mockito.when(basicRepository.save(ArgumentMatchers.any())).thenReturn(basic);
-		basicServiceImpl.update(basic);
+		UpdateRequest ur = new UpdateRequest();
+		ur.setName("NAME");
+		ur.setId(1);
+		basicServiceImpl.update(ur);
 	}
 }
