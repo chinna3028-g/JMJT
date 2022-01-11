@@ -7,47 +7,60 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jmjt.dao.BasicRepository;
+import com.jmjt.error.NotFoundException;
+import com.jmjt.mapper.Mapper;
 import com.jmjt.model.Basic;
+import com.jmjt.request.CreateRequest;
+import com.jmjt.request.UpdateRequest;
 import com.jmjt.service.BasicService;
 
 @Service
 public class BasicServiceImpl implements BasicService {
+	private final String ERROR_MSG = "No data found";
+
 	@Autowired
 	private BasicRepository basicRepository;
 
+	@Autowired
+	private Mapper basicMapper;
+
+	@Override
 	public List<Basic> findAll() {
-		return basicRepository.findAll();
+		List<Basic> listBasics = basicRepository.findAll();
+		return listBasics;
 	}
 
-	public Basic findById(int id) {
+	@Override
+	public Basic findById(int id) throws NotFoundException {
 		Optional<Basic> basic = basicRepository.findById(id);
+
 		if (!basic.isPresent()) {
-			return null;
+			throw new NotFoundException(ERROR_MSG);
 		}
 		return basic.get();
 	}
 
-	public Basic save(Basic basic) {
-		if (basic.getId() != 0) {
-			return null;
+	@Override
+	public Basic save(CreateRequest createRequest) throws Exception {
+
+		Basic basic = basicRepository.save(basicMapper.mapCreateRequest(createRequest));
+
+		if (basic != null && basic.getId() == 0) {
+			throw new Exception(ERROR_MSG);
 		}
-		return basicRepository.save(basic);
+		return basic;
 	}
 
-	public Basic deleteById(int id) {
+	@Override
+	public Basic deleteById(int id) throws NotFoundException {
 		Basic basic = findById(id);
-		if (basic == null) {
-			return null;
-		}
 		basicRepository.deleteById(id);
 		return basic;
 	}
 
-	public Basic update(Basic basic) {
-		basic = findById(basic.getId());
-		if (basic == null) {
-			return null;
-		}
-		return basicRepository.save(basic);
+	@Override
+	public Basic update(UpdateRequest updateRequest) throws NotFoundException {
+		findById(updateRequest.getId());
+		return basicRepository.save(basicMapper.mapUpdateRequest(updateRequest));
 	}
 }
