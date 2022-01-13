@@ -16,7 +16,7 @@ import com.jmjt.service.BasicService;
 
 @Service
 public class BasicServiceImpl implements BasicService {
-	private final String ERROR_MSG = "No data found";
+	private static final String ERROR_MSG = "No data found";
 
 	@Autowired
 	private BasicRepository basicRepository;
