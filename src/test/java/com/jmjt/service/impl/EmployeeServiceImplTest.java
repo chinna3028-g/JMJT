@@ -1,6 +1,7 @@
 package com.jmjt.service.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.junit.Before;
@@ -20,6 +22,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 import com.jmjt.dao.EmployeeRepository;
 import com.jmjt.error.NotFoundException;
@@ -46,6 +52,9 @@ public class EmployeeServiceImplTest {
 	@Mock
 	private JMJTUtil util;
 
+	@Mock
+	private RestTemplate restTemplate;
+
 	private String DUMMY_ID = "61dc04a78fa73329e8842caa";
 
 	@Before
@@ -66,6 +75,95 @@ public class EmployeeServiceImplTest {
 	public void findEmployeeByIdTest() throws NotFoundException {
 		Mockito.when(repository.findById(ArgumentMatchers.anyString())).thenReturn(Optional.of(new Employee()));
 		service.findEmployeeById(DUMMY_ID);
+	}
+
+	@Test
+	public void findEmployeeByIdWithCurrencyTest() throws Exception {
+		Mockito.when(repository.findById(ArgumentMatchers.anyString()))
+				.thenReturn(Optional.of(getEmployee(DUMMY_ID, "14700")));
+
+		ResponseEntity<String> entity = new ResponseEntity<String>("{\"USD\":\"0.013516\"}", HttpStatus.ACCEPTED);
+
+		Mockito.when(restTemplate.exchange(ArgumentMatchers.anyString(), ArgumentMatchers.any(HttpMethod.class),
+				ArgumentMatchers.any(), ArgumentMatchers.<Class<String>>any())).thenReturn(entity);
+
+		service.findEmployeeByIdWithCurrency(DUMMY_ID);
+	}
+
+	@Test(expected = RecordNotFoundException.class)
+	public void findEmployeeByIdWithCurrencyExceptionTest1() throws Exception {
+
+		Mockito.when(repository.findById(ArgumentMatchers.anyString())).thenReturn(Optional.empty());
+		ResponseEntity<String> entity = new ResponseEntity<String>("{\"USD\":\"0.013516\"}", HttpStatus.ACCEPTED);
+
+		Mockito.when(restTemplate.exchange(ArgumentMatchers.anyString(), ArgumentMatchers.any(HttpMethod.class),
+				ArgumentMatchers.any(), ArgumentMatchers.<Class<String>>any())).thenReturn(entity);
+
+		service.findEmployeeByIdWithCurrency(DUMMY_ID);
+
+	}
+
+	@Test
+	public void findEmployeeByIdWithCurrencyExceptionTest2() throws Exception {
+
+		Mockito.when(repository.findById(ArgumentMatchers.anyString()))
+				.thenReturn(Optional.of(getEmployee(DUMMY_ID, null)));
+		ResponseEntity<String> entity = new ResponseEntity<String>("{\"USD\":\"0.013516\"}", HttpStatus.ACCEPTED);
+
+		Mockito.when(restTemplate.exchange(ArgumentMatchers.anyString(), ArgumentMatchers.any(HttpMethod.class),
+				ArgumentMatchers.any(), ArgumentMatchers.<Class<String>>any())).thenReturn(entity);
+
+		service.findEmployeeByIdWithCurrency(DUMMY_ID);
+
+	}
+
+	@Test
+	public void findEmployeeByIdWithCurrencyExceptionTest3() throws Exception {
+
+		Mockito.when(repository.findById(ArgumentMatchers.anyString()))
+				.thenReturn(Optional.of(getEmployee(DUMMY_ID, "15000")));
+		ResponseEntity<String> entity = new ResponseEntity<String>("{\"USD\":\"\"}", HttpStatus.ACCEPTED);
+		Mockito.when(restTemplate.exchange(ArgumentMatchers.anyString(), ArgumentMatchers.any(HttpMethod.class),
+				ArgumentMatchers.any(), ArgumentMatchers.<Class<String>>any())).thenReturn(entity);
+
+		service.findEmployeeByIdWithCurrency(DUMMY_ID);
+
+	}
+
+	@Test
+	public void findEmployeeByIdWithCurrencyExceptionTest4() throws Exception {
+
+		Mockito.when(repository.findById(ArgumentMatchers.anyString()))
+				.thenReturn(Optional.of(getEmployee(DUMMY_ID, "15000")));
+		Mockito.when(restTemplate.exchange(ArgumentMatchers.anyString(), ArgumentMatchers.any(HttpMethod.class),
+				ArgumentMatchers.any(), ArgumentMatchers.<Class<String>>any())).thenReturn(null);
+
+		service.findEmployeeByIdWithCurrency(DUMMY_ID);
+
+	}
+
+	@Test
+	public void extractRespopnseDataTest() throws Exception {
+
+		Map<String, Object> resultMap = service.extractRespopnseData("{\"USD\":\"0.013516\"}");
+
+		assertNotNull(resultMap);
+		assertNotNull(resultMap.get("USD"));
+		assertEquals("0.013516", resultMap.get("USD"));
+
+	}
+
+	@Test(expected = Exception.class)
+	public void findEmployeeByIdWithCurrencyExceptionTest5() throws Exception {
+
+		Mockito.when(repository.findById(ArgumentMatchers.anyString()))
+				.thenReturn(Optional.of(getEmployee(DUMMY_ID, null)));
+		ResponseEntity<String> entity = new ResponseEntity<String>("", HttpStatus.ACCEPTED);
+		Mockito.when(restTemplate.exchange(ArgumentMatchers.anyString(), ArgumentMatchers.any(HttpMethod.class),
+				ArgumentMatchers.any(), ArgumentMatchers.<Class<String>>any())).thenReturn(entity);
+
+		service.findEmployeeByIdWithCurrency(DUMMY_ID);
+
 	}
 
 	@Test(expected = RecordNotFoundException.class)
@@ -288,4 +386,5 @@ public class EmployeeServiceImplTest {
 		employee.setEmployeeDOB("DUMMY");
 		return employee;
 	}
+
 }

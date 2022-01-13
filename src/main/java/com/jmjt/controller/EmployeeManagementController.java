@@ -41,6 +41,17 @@ public class EmployeeManagementController {
 		return ResponseEntity.status(200).body(emp);
 	}
 
+	@GetMapping("/{id}/usd")
+	public ResponseEntity<Employee> findEmployeeByIdWithCurrency(@PathVariable String id) throws Exception {
+		Employee emp = null;
+		try {
+			emp = employeeService.findEmployeeByIdWithCurrency(id);
+		} catch (Exception exception) {
+			throw new Exception("Failed To Execute");
+		}
+		return ResponseEntity.status(200).body(emp);
+	}
+
 	@PostMapping("")
 	public ResponseEntity<Employee> saveEmployee(@RequestBody EmployeeCreateRequest employeeCreateRequest) {
 		Employee emp = null;

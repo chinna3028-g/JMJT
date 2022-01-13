@@ -1,13 +1,25 @@
 package com.jmjt.service.impl.employee;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jmjt.dao.EmployeeRepository;
 import com.jmjt.error.NotFoundException;
 import com.jmjt.error.RecordNotFoundException;
@@ -30,6 +42,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Autowired
 	private JMJTUtil util;
 
+	@Autowired
+	private RestTemplate restTemplate;
+
 	@Override
 	public List<Employee> fetchAllEmployees() {
 		List<Employee> listEmployees = employeeRepository.findAll();
@@ -44,6 +59,47 @@ public class EmployeeServiceImpl implements EmployeeService {
 			throw new RecordNotFoundException("Resource Not Found");
 		}
 		return employee.get();
+	}
+
+	@Override
+	public Employee findEmployeeByIdWithCurrency(String id) throws Exception {
+		Optional<Employee> employeeOptinal = employeeRepository.findById(id);
+ 
+		if (!employeeOptinal.isPresent()) {
+			throw new RecordNotFoundException("Resource Not Found");
+		}
+		Employee employee = employeeOptinal.get();
+		HttpHeaders headers = new HttpHeaders();
+		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+		HttpEntity<String> entity = new HttpEntity<String>(headers);
+		String url = "https://mocki.io/v1/dd127c93-3db4-4164-b2cd-cc6d75e5e6d5";
+
+		try {
+
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+
+			if (response != null) {
+
+				Map<String, Object> map = extractRespopnseData(response.getBody());
+
+				double salary = employee.getEmployeeSalary() != null ? Double.parseDouble(employee.getEmployeeSalary())
+						: 0;
+				double usd = map.get("USD") != "" ? Double.parseDouble((String) map.get("USD")) : 0.013516;
+
+				employee.setEmployeeSalary("$" + String.valueOf(salary * usd));
+			}
+		} catch (Exception exception) {
+			throw new Exception("Failed To Execute");
+		}
+
+		return employee;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> extractRespopnseData(String body) throws JsonParseException, JsonMappingException, IOException{
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String, Object> map = mapper.readValue(body, Map.class);
+		return map;
 	}
 
 	@Override
