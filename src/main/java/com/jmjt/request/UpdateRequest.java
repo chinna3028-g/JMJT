@@ -1,7 +1,9 @@
-package com.jmjt.dto;
+package com.jmjt.request;
 
-public class BasicDto {
+public class UpdateRequest {
+
 	private int id;
+
 	private String name;
 
 	public int getId() {

@@ -1,8 +1,6 @@
-package com.jmjt.mapper;
+package com.jmjt.controller;
 
 import static org.junit.Assert.assertEquals;
-
-import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -22,8 +20,7 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import com.jmjt.controller.BasicController;
-import com.jmjt.dto.BasicDto;
+import com.jmjt.mapper.Mapper;
 import com.jmjt.model.Basic;
 import com.jmjt.service.BasicService;
 
@@ -35,7 +32,7 @@ public class BasicControllerTest {
 	private BasicService basicService;
 
 	@Mock
-	private BasicMapper basicMapper;
+	private Mapper basicMapper;
 
 	private MockMvc mockMvc;
 
@@ -46,14 +43,12 @@ public class BasicControllerTest {
 	}
 
 	private String val1 = "{\r\n" + "\"name\":\"deepak\"\r\n" + "}";
-	private String val2 = "{\r\n" + "\"name\":\"deepak\",\r\n" + "\"id\",1\r\n" + "}";
 
 	@Test
 	public void testSaveNull() throws Exception {
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/r").accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON).content(val1);
-		Mockito.when(basicMapper.mapCreateRequest(ArgumentMatchers.any())).thenReturn(new Basic());
 		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 		MockHttpServletResponse response = mvcResult.getResponse();
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
@@ -64,8 +59,18 @@ public class BasicControllerTest {
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/r").accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON).content(val1);
-		Mockito.when(basicMapper.mapCreateRequest(ArgumentMatchers.any())).thenReturn(new Basic());
 		Mockito.when(basicService.save(ArgumentMatchers.any())).thenReturn(new Basic());
+		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+		MockHttpServletResponse response = mvcResult.getResponse();
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+	}
+	
+	@Test
+	public void updateTest() throws Exception {
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/r").accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON).content(val1);
+		Mockito.when(basicService.update(ArgumentMatchers.any())).thenReturn(new Basic());
 		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 		MockHttpServletResponse response = mvcResult.getResponse();
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
@@ -74,7 +79,6 @@ public class BasicControllerTest {
 	@Test
 	public void testFindAll() throws Exception {
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/r").accept(MediaType.APPLICATION_JSON);
-		Mockito.when(basicMapper.map(ArgumentMatchers.any())).thenReturn(new ArrayList<BasicDto>());
 		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 		MockHttpServletResponse response = mvcResult.getResponse();
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
