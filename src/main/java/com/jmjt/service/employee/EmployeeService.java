@@ -14,6 +14,8 @@ public interface EmployeeService {
 
 	Employee findEmployeeById(String id) throws RecordNotFoundException;
 
+	Employee findEmployeeByIdWithCurrency(String id) throws Exception;
+
 	Employee applySalaryIncrementById(String id) throws NotFoundException;
 
 	List<Employee> applySalaryIncrementToAll();
@@ -23,9 +25,9 @@ public interface EmployeeService {
 	void deleteEmployeeById(String employeeId) throws NotFoundException;
 
 	Employee updateEmployee(EmployeeUpdateRequest EmployeeUpdateRequest) throws Exception;
-	
+
 	void generateEmployeeReportById(String employeeId) throws Exception;
-	
+
 	void generateEmployeesReport() throws Exception;
-	
+
 }

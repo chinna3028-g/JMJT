@@ -93,6 +93,26 @@ public class EmployeeManagementControllerTest {
 	}
 
 	@Test
+	public void findEmployeeByIdWithCurrencyTest() throws Exception {
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/employee/61dc09368fa7333c4c20e88f/usd")
+				.accept(MediaType.APPLICATION_JSON);
+		Mockito.when(service.findEmployeeByIdWithCurrency(ArgumentMatchers.anyString())).thenReturn(new Employee());
+		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+		MockHttpServletResponse response = mvcResult.getResponse();
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+	}
+
+	@Test(expected = Exception.class)
+	public void findEmployeeByIdWithCurrencyExceptionTest() throws Exception {
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/employee/61dc09368fa7333c4c20e88f/usd")
+				.accept(MediaType.APPLICATION_JSON);
+		Mockito.when(service.findEmployeeByIdWithCurrency(ArgumentMatchers.anyString())).thenThrow(Exception.class);
+		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+		MockHttpServletResponse response = mvcResult.getResponse();
+		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+	}
+
+	@Test
 	public void saveEmployeeTest() throws Exception {
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/employee").accept(MediaType.APPLICATION_JSON)
