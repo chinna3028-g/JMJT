@@ -21,6 +21,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jmjt.dao.EmployeeRepository;
+import com.jmjt.error.InternalServerError;
 import com.jmjt.error.NotFoundException;
 import com.jmjt.error.RecordNotFoundException;
 import com.jmjt.mapper.Mapper;
@@ -62,7 +63,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public Employee findEmployeeByIdWithCurrency(String id) throws Exception {
+	public Employee findEmployeeByIdWithCurrency(String id) throws InternalServerError {
 		Optional<Employee> employeeOptinal = employeeRepository.findById(id);
  
 		if (!employeeOptinal.isPresent()) {
@@ -89,7 +90,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 				employee.setEmployeeSalary("$" + String.valueOf(salary * usd));
 			}
 		} catch (Exception exception) {
-			throw new Exception("Failed To Execute");
+			throw new InternalServerError("Failed To Execute");
 		}
 
 		return employee;

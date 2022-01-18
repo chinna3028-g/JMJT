@@ -2,6 +2,7 @@ package com.jmjt.service.employee;
 
 import java.util.List;
 
+import com.jmjt.error.InternalServerError;
 import com.jmjt.error.NotFoundException;
 import com.jmjt.error.RecordNotFoundException;
 import com.jmjt.model.Employee;
@@ -14,7 +15,7 @@ public interface EmployeeService {
 
 	Employee findEmployeeById(String id) throws RecordNotFoundException;
 
-	Employee findEmployeeByIdWithCurrency(String id) throws Exception;
+	Employee findEmployeeByIdWithCurrency(String id) throws InternalServerError;
 
 	Employee applySalaryIncrementById(String id) throws NotFoundException;
 
