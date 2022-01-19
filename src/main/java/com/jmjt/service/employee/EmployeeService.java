@@ -2,7 +2,6 @@ package com.jmjt.service.employee;
 
 import java.util.List;
 
-import com.jmjt.error.InternalServerError;
 import com.jmjt.error.NotFoundException;
 import com.jmjt.error.RecordNotFoundException;
 import com.jmjt.model.Employee;
@@ -15,20 +14,20 @@ public interface EmployeeService {
 
 	Employee findEmployeeById(String id) throws RecordNotFoundException;
 
-	Employee findEmployeeByIdWithCurrency(String id) throws InternalServerError, RecordNotFoundException;
+	Employee findEmployeeByIdWithCurrency(String id) throws Exception;
 
-	Employee applySalaryIncrementById(String id) throws NotFoundException, RecordNotFoundException;
+	Employee applySalaryIncrementById(String id) throws NotFoundException;
 
 	List<Employee> applySalaryIncrementToAll();
 
-	Employee saveEmployee(EmployeeCreateRequest employeeCreateRequest) throws InternalServerError ;
+	Employee saveEmployee(EmployeeCreateRequest employeeCreateRequest) throws Exception;
 
-	void deleteEmployeeById(String employeeId) throws NotFoundException, RecordNotFoundException;
+	void deleteEmployeeById(String employeeId) throws NotFoundException;
 
-	Employee updateEmployee(EmployeeUpdateRequest EmployeeUpdateRequest) throws NotFoundException, RecordNotFoundException ;
+	Employee updateEmployee(EmployeeUpdateRequest EmployeeUpdateRequest) throws Exception;
 
 	void generateEmployeeReportById(String employeeId) throws Exception;
 
-	void generateEmployeesReport() throws InternalServerError;
+	void generateEmployeesReport() throws Exception;
 
 }
