@@ -21,6 +21,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jmjt.dao.EmployeeRepository;
+import com.jmjt.error.InternalServerError;
 import com.jmjt.error.NotFoundException;
 import com.jmjt.error.RecordNotFoundException;
 import com.jmjt.mapper.Mapper;
@@ -47,8 +48,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	public List<Employee> fetchAllEmployees() {
-		List<Employee> listEmployees = employeeRepository.findAll();
-		return listEmployees;
+		return employeeRepository.findAll();
 	}
 
 	@Override
@@ -62,9 +62,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public Employee findEmployeeByIdWithCurrency(String id) throws Exception {
+	public Employee findEmployeeByIdWithCurrency(String id) throws InternalServerError, RecordNotFoundException {
 		Optional<Employee> employeeOptinal = employeeRepository.findById(id);
- 
+
 		if (!employeeOptinal.isPresent()) {
 			throw new RecordNotFoundException("Resource Not Found");
 		}
@@ -78,7 +78,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
 
-			if (response != null) {
+			
 
 				Map<String, Object> map = extractRespopnseData(response.getBody());
 
@@ -86,24 +86,24 @@ public class EmployeeServiceImpl implements EmployeeService {
 						: 0;
 				double usd = map.get("USD") != "" ? Double.parseDouble((String) map.get("USD")) : 0.013516;
 
-				employee.setEmployeeSalary("$" + String.valueOf(salary * usd));
-			}
+				employee.setEmployeeSalary("$" + salary * usd);
+			
 		} catch (Exception exception) {
-			throw new Exception("Failed To Execute");
+			throw new InternalServerError("Failed To Execute");
 		}
 
 		return employee;
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> extractRespopnseData(String body) throws JsonParseException, JsonMappingException, IOException{
-		ObjectMapper mapper = new ObjectMapper();
-		Map<String, Object> map = mapper.readValue(body, Map.class);
-		return map;
+	public Map<String, Object> extractRespopnseData(String body)
+			throws IOException {
+		ObjectMapper objectMapper = new ObjectMapper();
+		return objectMapper.readValue(body, Map.class);
 	}
 
 	@Override
-	public Employee applySalaryIncrementById(String id) throws NotFoundException {
+	public Employee applySalaryIncrementById(String id) throws NotFoundException, RecordNotFoundException {
 		Employee employee = findEmployeeById(id);
 		int increment = 0;
 		int sal = employee.getEmployeeSalary() != null ? Integer.parseInt(employee.getEmployeeSalary()) : 0;
@@ -143,7 +143,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 				employee.setEmployeeSalary(String.valueOf(sal));
 
-			} else if (sal >= 15000 & sal <= 25000) {
+			} else if (sal >= 15000 && sal <= 25000) {
 				// incrementing salary 4%
 				increment += (sal * 4) / 100;
 				sal = sal + increment;
@@ -162,36 +162,35 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public Employee saveEmployee(EmployeeCreateRequest employeeCreateRequest) throws Exception {
+	public Employee saveEmployee(EmployeeCreateRequest employeeCreateRequest) throws InternalServerError {
 
 		Employee employee = employeeRepository.save(mapper.mapEmployeeCreateRequest(employeeCreateRequest));
 		if (employee.getId() == null) {
-			throw new Exception("Not Able to Save Data");
+			throw new InternalServerError("Not Able to Save Data");
 		}
 
 		return employee;
 	}
 
 	@Override
-	public Employee updateEmployee(EmployeeUpdateRequest updateEmployeeRequest) throws NotFoundException {
+	public Employee updateEmployee(EmployeeUpdateRequest updateEmployeeRequest) throws NotFoundException, RecordNotFoundException {
 		findEmployeeById(updateEmployeeRequest.getEmployeeId());
 		return employeeRepository.save(mapper.mapEmployeeUpdateRequest(updateEmployeeRequest));
 	}
 
 	@Override
-	public void deleteEmployeeById(String id) throws NotFoundException {
+	public void deleteEmployeeById(String id) throws NotFoundException, RecordNotFoundException {
 		findEmployeeById(id);
 		employeeRepository.deleteById(String.valueOf(id));
 	}
 
 	@Override
-	public void generateEmployeeReportById(String employeeId) throws Exception {
+	public void generateEmployeeReportById(String employeeId) throws InternalServerError, RecordNotFoundException {
 		Employee employee = findEmployeeById(employeeId);
 
-		PrintWriter writer = null;
-		try {
-			File file = new File(util.getFileName());
-			writer = new PrintWriter(file);
+		File file = new File(util.getFileName());
+		try (PrintWriter writer = new PrintWriter(file)) {
+			
 			writer.write(
 					"Employee Id\t\t\t\t\tEmployee Name\t\t\t\tEmployee Desognation\tEmployee DOB\tEmployee Salary");
 			writer.println();
@@ -210,22 +209,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 			writer.flush();
 
 		} catch (Exception e) {
-			throw new Exception("Report Not able to generate");
-		} finally {
-			if (writer != null)
-				writer.close();
-		}
+			throw new InternalServerError("Report Not able to generate");
+		} 
 
 	}
 
 	@Override
-	public void generateEmployeesReport() throws Exception {
+	public void generateEmployeesReport() throws InternalServerError {
 		List<Employee> listEmployees = employeeRepository.findAll();
-		PrintWriter writer = null;
-		try {
-			File file = new File(util.getFileName());
+		File file = new File(util.getFileName());
+		try (PrintWriter writer = new PrintWriter(file)) {
 
-			writer = new PrintWriter(file);
 			writer.write(
 					"Employee Id\t\t\t\t\tEmployee Name\t\t\t\tEmployee Desognation\tEmployee DOB\tEmployee Salary");
 			writer.println();
@@ -244,10 +238,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 			writer.flush();
 
 		} catch (Exception e) {
-			throw new Exception("Report Not able to generate");
-		} finally {
-			if (writer != null)
-				writer.close();
+			throw new InternalServerError("Report Not able to generate");
 		}
 	}
 

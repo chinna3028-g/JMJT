@@ -28,6 +28,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import com.jmjt.dao.EmployeeRepository;
+import com.jmjt.error.InternalServerError;
 import com.jmjt.error.NotFoundException;
 import com.jmjt.error.RecordNotFoundException;
 import com.jmjt.mapper.Mapper;
@@ -72,7 +73,7 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void findEmployeeByIdTest() throws NotFoundException {
+	public void findEmployeeByIdTest() throws NotFoundException, RecordNotFoundException {
 		Mockito.when(repository.findById(ArgumentMatchers.anyString())).thenReturn(Optional.of(new Employee()));
 		service.findEmployeeById(DUMMY_ID);
 	}
@@ -131,12 +132,12 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void findEmployeeByIdWithCurrencyExceptionTest4() throws Exception {
+	public void findEmployeeByIdWithCurrencyExceptionTest4() throws InternalServerError, RecordNotFoundException {
 
 		Mockito.when(repository.findById(ArgumentMatchers.anyString()))
 				.thenReturn(Optional.of(getEmployee(DUMMY_ID, "15000")));
 		Mockito.when(restTemplate.exchange(ArgumentMatchers.anyString(), ArgumentMatchers.any(HttpMethod.class),
-				ArgumentMatchers.any(), ArgumentMatchers.<Class<String>>any())).thenReturn(null);
+				ArgumentMatchers.any(), ArgumentMatchers.<Class<String>>any())).thenReturn(ResponseEntity.ok("{\"name\":\"deepak\", \"USD\":\"21\"}"));
 
 		service.findEmployeeByIdWithCurrency(DUMMY_ID);
 
@@ -173,7 +174,7 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void applySalaryIncrementByIdTest1() throws NotFoundException {
+	public void applySalaryIncrementByIdTest1() throws NotFoundException, RecordNotFoundException {
 		Mockito.when(repository.findById(ArgumentMatchers.any()))
 				.thenReturn(Optional.of(getEmployee(DUMMY_ID, "14000")));
 		Mockito.when(repository.save(ArgumentMatchers.any())).thenReturn(getEmployee(DUMMY_ID, "14700"));
@@ -183,7 +184,7 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void applySalaryIncrementByIdTest3() throws NotFoundException {
+	public void applySalaryIncrementByIdTest3() throws NotFoundException, RecordNotFoundException {
 		Mockito.when(repository.findById(ArgumentMatchers.any()))
 				.thenReturn(Optional.of(getEmployee(DUMMY_ID, "15000")));
 		Mockito.when(repository.save(ArgumentMatchers.any())).thenReturn(getEmployee(DUMMY_ID, "15750"));
@@ -193,7 +194,7 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void applySalaryIncrementByIdTest6() throws NotFoundException {
+	public void applySalaryIncrementByIdTest6() throws NotFoundException, RecordNotFoundException {
 		Mockito.when(repository.findById(ArgumentMatchers.any()))
 				.thenReturn(Optional.of(getEmployee(DUMMY_ID, "16000")));
 		Mockito.when(repository.save(ArgumentMatchers.any())).thenReturn(getEmployee(DUMMY_ID, "16400"));
@@ -203,7 +204,7 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void applySalaryIncrementByIdTest4() throws NotFoundException {
+	public void applySalaryIncrementByIdTest4() throws NotFoundException, RecordNotFoundException {
 		Mockito.when(repository.findById(DUMMY_ID)).thenReturn(Optional.of(getEmployee(DUMMY_ID, "20000")));
 		Mockito.when(repository.save(ArgumentMatchers.any())).thenReturn(getEmployee(DUMMY_ID, "20800"));
 
@@ -212,7 +213,7 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void applySalaryIncrementByIdTest2() throws NotFoundException {
+	public void applySalaryIncrementByIdTest2() throws NotFoundException, RecordNotFoundException {
 		Mockito.when(repository.findById(ArgumentMatchers.any()))
 				.thenReturn(Optional.of(getEmployee(DUMMY_ID, "30000")));
 		Mockito.when(repository.save(ArgumentMatchers.any())).thenReturn(getEmployee(DUMMY_ID, "30900"));
@@ -222,7 +223,7 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void applySalaryIncrementByIdTest5() throws NotFoundException {
+	public void applySalaryIncrementByIdTest5() throws NotFoundException, RecordNotFoundException {
 		Mockito.when(repository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(getEmployee(DUMMY_ID, null)));
 		Mockito.when(repository.save(ArgumentMatchers.any())).thenReturn(getEmployee(DUMMY_ID, "0"));
 		Employee emp = service.applySalaryIncrementById(DUMMY_ID);
@@ -309,7 +310,7 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void deleteEmployeeByIdTest() throws NotFoundException {
+	public void deleteEmployeeByIdTest() throws NotFoundException, RecordNotFoundException {
 		Employee employee = new Employee();
 		employee.setId(DUMMY_ID);
 		Optional<Employee> employeeOpt = Optional.of(employee);
@@ -318,7 +319,7 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void updateEmployeeTest() throws NotFoundException {
+	public void updateEmployeeTest() throws NotFoundException, RecordNotFoundException {
 		EmployeeUpdateRequest ur = new EmployeeUpdateRequest();
 		ur.setEmployeeId(DUMMY_ID);
 		Mockito.when(mapper.mapEmployeeUpdateRequest(ArgumentMatchers.any()))
