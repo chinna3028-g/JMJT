@@ -25,9 +25,9 @@ public interface EmployeeService {
 
 	void deleteEmployeeById(String employeeId) throws NotFoundException, RecordNotFoundException;
 
-	Employee updateEmployee(EmployeeUpdateRequest EmployeeUpdateRequest) throws NotFoundException, RecordNotFoundException ;
+	Employee updateEmployee(EmployeeUpdateRequest employeeUpdateRequest) throws NotFoundException, RecordNotFoundException ;
 
-	void generateEmployeeReportById(String employeeId) throws Exception;
+	void generateEmployeeReportById(String employeeId) throws InternalServerError, RecordNotFoundException ;
 
 	void generateEmployeesReport() throws InternalServerError;
 

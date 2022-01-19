@@ -17,8 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jmjt.dao.EmployeeRepository;
 import com.jmjt.error.InternalServerError;
@@ -45,6 +43,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Autowired
 	private RestTemplate restTemplate;
+	
+	private static final String ERRPRMSG="Report Not able to generate";
 
 	@Override
 	public List<Employee> fetchAllEmployees() {
@@ -71,7 +71,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		Employee employee = employeeOptinal.get();
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-		HttpEntity<String> entity = new HttpEntity<String>(headers);
+		HttpEntity<String> entity = new HttpEntity<>(headers);
 		String url = "https://mocki.io/v1/dd127c93-3db4-4164-b2cd-cc6d75e5e6d5";
 
 		try {
@@ -192,7 +192,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		try (PrintWriter writer = new PrintWriter(file)) {
 			
 			writer.write(
-					"Employee Id\t\t\t\t\tEmployee Name\t\t\t\tEmployee Desognation\tEmployee DOB\tEmployee Salary");
+					"Employee Id\t\t\t\t\tEmployee Name\t\t\t\tEmployee Desognations\tEmployee DOB\tEmployee Salary");
 			writer.println();
 
 			writer.write(employee.getId());
@@ -209,7 +209,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 			writer.flush();
 
 		} catch (Exception e) {
-			throw new InternalServerError("Report Not able to generate");
+			throw new InternalServerError(ERRPRMSG);
 		} 
 
 	}
@@ -223,22 +223,22 @@ public class EmployeeServiceImpl implements EmployeeService {
 			writer.write(
 					"Employee Id\t\t\t\t\tEmployee Name\t\t\t\tEmployee Desognation\tEmployee DOB\tEmployee Salary");
 			writer.println();
-			for (Employee employee : listEmployees) {
-				writer.write(employee.getId());
+			for (Employee emp : listEmployees) {
+				writer.write(emp.getId());
 				writer.print("\t");
-				writer.write(employee.getEmployeeName());
+				writer.write(emp.getEmployeeName());
 				writer.print("\t\t");
-				writer.write(employee.getEmployeeDesignation());
+				writer.write(emp.getEmployeeDesignation());
 				writer.print("\t\t\t\t");
-				writer.write(employee.getEmployeeDOB());
+				writer.write(emp.getEmployeeDOB());
 				writer.print("\t");
-				writer.write(employee.getEmployeeSalary());
+				writer.write(emp.getEmployeeSalary());
 				writer.println();
 			}
 			writer.flush();
 
 		} catch (Exception e) {
-			throw new InternalServerError("Report Not able to generate");
+			throw new InternalServerError(ERRPRMSG);
 		}
 	}
 

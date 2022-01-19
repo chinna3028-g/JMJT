@@ -212,16 +212,6 @@ public class EmployeeManagementControllerTest {
 	}
 
 	@Test
-	public void generateEmployeesReportExceptionTest() throws Exception {
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/employee/report")
-				.accept(MediaType.APPLICATION_JSON);
-		Mockito.doThrow(Exception.class);
-		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
-		MockHttpServletResponse response = mvcResult.getResponse();
-		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
-	}
-
-	@Test
 	public void generateEmployeeReportByIdTest() throws Exception {
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/employee/report/61dc09368fa7333c4c20e88f")
 				.accept(MediaType.APPLICATION_JSON);

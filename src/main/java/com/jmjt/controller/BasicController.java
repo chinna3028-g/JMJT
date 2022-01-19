@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jmjt.error.InternalServerError;
 import com.jmjt.error.NotFoundException;
 import com.jmjt.model.Basic;
 import com.jmjt.request.CreateRequest;
@@ -35,7 +36,7 @@ public class BasicController {
 	}
 
 	@PostMapping("")
-	public ResponseEntity<Basic> save(@RequestBody CreateRequest createRequest) throws Exception {
+	public ResponseEntity<Basic> save(@RequestBody CreateRequest createRequest) throws InternalServerError {
 		return ResponseEntity.status(200).body(basicService.save(createRequest));
 	}
 
