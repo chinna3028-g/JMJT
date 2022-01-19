@@ -19,5 +19,14 @@ pipeline {
                 }
             }
         }
+
+
+        stage ('Sonar Stage') {
+            steps {
+                 withMaven{
+                    sh 'mvn sonar:sonar'
+                }
+            }
+        }
     }
 }
