@@ -188,10 +188,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 	public void generateEmployeeReportById(String employeeId) throws InternalServerError, RecordNotFoundException {
 		Employee employee = findEmployeeById(employeeId);
 
-		PrintWriter writer = null;
-		try {
-			File file = new File(util.getFileName());
-			writer = new PrintWriter(file);
+		File file = new File(util.getFileName());
+		try (PrintWriter writer = new PrintWriter(file)) {
+			
 			writer.write(
 					"Employee Id\t\t\t\t\tEmployee Name\t\t\t\tEmployee Desognation\tEmployee DOB\tEmployee Salary");
 			writer.println();
@@ -211,10 +210,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 		} catch (Exception e) {
 			throw new InternalServerError("Report Not able to generate");
-		} finally {
-			if (writer != null)
-				writer.close();
-		}
+		} 
 
 	}
 
