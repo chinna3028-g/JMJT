@@ -32,24 +32,16 @@ public class EmployeeManagementController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Employee> findEmployeeById(@PathVariable String id) {
+	public ResponseEntity<Employee> findEmployeeById(@PathVariable String id) throws RecordNotFoundException {
 		Employee emp = null;
-		try {
 			emp = employeeService.findEmployeeById(id);
-		} catch (RecordNotFoundException exception) {
-			throw new RecordNotFoundException("Resource Not Found");
-		}
 		return ResponseEntity.status(200).body(emp);
 	}
 
 	@GetMapping("/{id}/usd")
-	public ResponseEntity<Employee> findEmployeeByIdWithCurrency(@PathVariable String id) throws InternalServerError {
+	public ResponseEntity<Employee> findEmployeeByIdWithCurrency(@PathVariable String id) throws InternalServerError, RecordNotFoundException {
 		Employee emp = null;
-		try {
 			emp = employeeService.findEmployeeByIdWithCurrency(id);
-		} catch (Exception exception) {
-			throw new InternalServerError("Failed To Execute");
-		}
 		return ResponseEntity.status(200).body(emp);
 	}
 
