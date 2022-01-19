@@ -15,15 +15,15 @@ public interface EmployeeService {
 
 	Employee findEmployeeById(String id) throws RecordNotFoundException;
 
-	Employee findEmployeeByIdWithCurrency(String id) throws InternalServerError, RecordNotFoundException;
+	Employee findEmployeeByIdWithCurrency(String id) throws Exception;
 
-	Employee applySalaryIncrementById(String id) throws NotFoundException, RecordNotFoundException;
+	Employee applySalaryIncrementById(String id) throws NotFoundException;
 
 	List<Employee> applySalaryIncrementToAll();
 
-	Employee saveEmployee(EmployeeCreateRequest employeeCreateRequest) throws InternalServerError ;
+	Employee saveEmployee(EmployeeCreateRequest employeeCreateRequest) throws Exception;
 
-	void deleteEmployeeById(String employeeId) throws NotFoundException, RecordNotFoundException;
+	void deleteEmployeeById(String employeeId) throws NotFoundException;
 
 	Employee updateEmployee(EmployeeUpdateRequest employeeUpdateRequest) throws NotFoundException, RecordNotFoundException ;
 
