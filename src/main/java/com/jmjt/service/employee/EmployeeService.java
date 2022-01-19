@@ -2,6 +2,7 @@ package com.jmjt.service.employee;
 
 import java.util.List;
 
+import com.jmjt.error.InternalServerError;
 import com.jmjt.error.NotFoundException;
 import com.jmjt.error.RecordNotFoundException;
 import com.jmjt.model.Employee;
@@ -24,10 +25,10 @@ public interface EmployeeService {
 
 	void deleteEmployeeById(String employeeId) throws NotFoundException;
 
-	Employee updateEmployee(EmployeeUpdateRequest EmployeeUpdateRequest) throws Exception;
+	Employee updateEmployee(EmployeeUpdateRequest employeeUpdateRequest) throws NotFoundException, RecordNotFoundException ;
 
-	void generateEmployeeReportById(String employeeId) throws Exception;
+	void generateEmployeeReportById(String employeeId) throws InternalServerError, RecordNotFoundException ;
 
-	void generateEmployeesReport() throws Exception;
+	void generateEmployeesReport() throws InternalServerError;
 
 }

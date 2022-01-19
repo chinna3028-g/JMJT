@@ -1,6 +1,7 @@
 package com.jmjt.service.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.security.NoSuchAlgorithmException;
@@ -73,9 +74,10 @@ public class BasicServiceImplTest {
 		cr.setName("NAME");
 		Basic basic = new Basic();
 		basic.setName("NAME");
-		basic.setId(0);
+		basic.setId(1);
 		Mockito.when(basicMapper.mapCreateRequest(ArgumentMatchers.any())).thenReturn(basic);
-		assertNull(basicServiceImpl.save(cr));
+		Mockito.when(basicRepository.save(ArgumentMatchers.any())).thenReturn(basic);
+		assertNotNull(basicServiceImpl.save(cr));
 	}
 
 	@Test(expected = Exception.class)

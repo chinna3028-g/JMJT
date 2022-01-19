@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jmjt.dao.BasicRepository;
+import com.jmjt.error.InternalServerError;
 import com.jmjt.error.NotFoundException;
 import com.jmjt.mapper.Mapper;
 import com.jmjt.model.Basic;
@@ -26,8 +27,7 @@ public class BasicServiceImpl implements BasicService {
 
 	@Override
 	public List<Basic> findAll() {
-		List<Basic> listBasics = basicRepository.findAll();
-		return listBasics;
+		return basicRepository.findAll();
 	}
 
 	@Override
@@ -41,12 +41,12 @@ public class BasicServiceImpl implements BasicService {
 	}
 
 	@Override
-	public Basic save(CreateRequest createRequest) throws Exception {
+	public Basic save(CreateRequest createRequest) throws InternalServerError {
 
 		Basic basic = basicRepository.save(basicMapper.mapCreateRequest(createRequest));
 
-		if (basic != null && basic.getId() == 0) {
-			throw new Exception(ERROR_MSG);
+		if ( basic.getId() == 0) {
+			throw new InternalServerError(ERROR_MSG);
 		}
 		return basic;
 	}

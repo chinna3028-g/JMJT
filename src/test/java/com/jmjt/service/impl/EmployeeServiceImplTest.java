@@ -28,6 +28,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import com.jmjt.dao.EmployeeRepository;
+import com.jmjt.error.InternalServerError;
 import com.jmjt.error.NotFoundException;
 import com.jmjt.error.RecordNotFoundException;
 import com.jmjt.mapper.Mapper;
@@ -131,12 +132,12 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void findEmployeeByIdWithCurrencyExceptionTest4() throws Exception {
+	public void findEmployeeByIdWithCurrencyExceptionTest4() throws InternalServerError, RecordNotFoundException {
 
 		Mockito.when(repository.findById(ArgumentMatchers.anyString()))
 				.thenReturn(Optional.of(getEmployee(DUMMY_ID, "15000")));
 		Mockito.when(restTemplate.exchange(ArgumentMatchers.anyString(), ArgumentMatchers.any(HttpMethod.class),
-				ArgumentMatchers.any(), ArgumentMatchers.<Class<String>>any())).thenReturn(null);
+				ArgumentMatchers.any(), ArgumentMatchers.<Class<String>>any())).thenReturn(ResponseEntity.ok("{\"name\":\"deepak\", \"USD\":\"21\"}"));
 
 		service.findEmployeeByIdWithCurrency(DUMMY_ID);
 
