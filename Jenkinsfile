@@ -1,12 +1,23 @@
-gktpipeline {
+pipeline {
     agent any
+
+    tools {
+        // Install the Maven version configured as "M3" and add it to the path.
+        maven "MAVEN_HOME"
+    }
 	
-    stages {
+  stages {
+  
+      stage ('Git') {
+         steps {
+        git 'https://github.com/chinna3028/JMJT.git'
+      }
+    }
         stage ('Compile Stage') {
 
             steps {
-                withMaven{
-                    sh 'mvn clean compile'
+                 {
+                    bat 'mvn clean compile'
                 }
             }
         }
@@ -14,17 +25,15 @@ gktpipeline {
         stage ('Testing Stage') {
 
             steps {
-                 withMaven {
-                    sh 'mvn test'
+                 {
+                    bat 'mvn test'
                 }
             }
         }
-
-
-        stage ('Sonar Stage') {
+        stage ('Deployment Stage') {
             steps {
-                 withMaven{
-                    sh 'mvn sonar:sonar'
+                 {
+                    bat 'mvn deploy'
                 }
             }
         }
