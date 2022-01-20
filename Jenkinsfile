@@ -1,7 +1,12 @@
 pipeline {
     agent any
-	
-    stages {
+
+	tools {
+        // Install the Maven version configured as "M3" and add it to the path.
+        maven "MAVEN_HOME"
+    }
+  stages {
+  
       stage ('Git') {
          steps {
         git 'https://github.com/chinna3028/JMJT.git'
@@ -10,8 +15,8 @@ pipeline {
         stage ('Compile Stage') {
 
             steps {
-                withMaven{
-                    sh 'mvn clean compile'
+                 withMaven{
+                    bat 'mvn clean compile'
                 }
             }
         }
@@ -19,17 +24,15 @@ pipeline {
         stage ('Testing Stage') {
 
             steps {
-                 withMaven {
-                    sh 'mvn test'
+                 withMaven{
+                    bat 'mvn test'
                 }
             }
         }
-
-
-        stage ('Sonar Stage') {
+        stage ('Deployment Stage') {
             steps {
                  withMaven{
-                    sh 'mvn sonar:sonar'
+                    bat 'mvn deploy'
                 }
             }
         }
