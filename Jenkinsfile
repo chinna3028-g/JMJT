@@ -8,13 +8,16 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                // Get some code from a GitHub repository
                 
-
-                
-
-                // To run Maven on a Windows agent, use
                  bat "mvn clean install"
+            }
+
+          
+        }
+         stage('test') {
+            steps {
+                
+                 bat "mvn test"
             }
 
           
