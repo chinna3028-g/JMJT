@@ -1,40 +1,23 @@
 pipeline {
     agent any
 
-	tools {
-       
+    tools {
         maven "MAVEN_HOME"
     }
-  stages {
-  
-      stage ('Git') {
-         steps {
-        git 'https://github.com/chinna3028/JMJT.git'
-      }
-    }
-        stage ('Compile Stage') {
 
+    stages {
+        stage('Build') {
             steps {
-                 withMaven{
-                    bat 'mvn clean compile'
-                }
-            }
-        }
+                // Get some code from a GitHub repository
+                git 'https://github.com/chinna3028/JMJT.git'
 
-        stage ('Testing Stage') {
+                
 
-            steps {
-                 withMaven{
-                    bat 'mvn test'
-                }
+                // To run Maven on a Windows agent, use
+                 bat "mvn clean package"
             }
-        }
-        stage ('Deployment Stage') {
-            steps {
-                 withMaven{
-                    bat 'mvn deploy'
-                }
-            }
+
+          
         }
     }
 }
