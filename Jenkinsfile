@@ -22,5 +22,14 @@ pipeline {
 
           
         }
+        stage('sonat') {
+            steps {
+                
+                 bat "mvn sonar:sonar"
+            }
+
+          
+        }
+        
     }
 }
