@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jmjt.error.InternalServerError;
 import com.jmjt.error.NotFoundException;
 import com.jmjt.error.RecordNotFoundException;
 import com.jmjt.model.Employee;
@@ -102,12 +103,9 @@ public class EmployeeManagementController {
 	}
 
 	@GetMapping("/report")
-	public ResponseEntity<String> generateEmployeesReport() throws Exception {
-		try {
+	public ResponseEntity<String> generateEmployeesReport() throws InternalServerError {
 			employeeService.generateEmployeesReport();
-		} catch (Exception exception) {
-			return ResponseEntity.status(404).body("Failed To generate report");
-		}
+		
 		return ResponseEntity.status(200).body("Generated Successfully");
 	}
 

@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import com.jmjt.error.InternalServerError;
 import com.jmjt.error.NotFoundException;
 import com.jmjt.error.RecordNotFoundException;
 import com.jmjt.mapper.Mapper;
@@ -128,7 +129,7 @@ public class EmployeeManagementControllerTest {
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/employee").accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON).content(val1);
-		Mockito.when(service.saveEmployee(ArgumentMatchers.any())).thenThrow(Exception.class);
+		Mockito.when(service.saveEmployee(ArgumentMatchers.any())).thenThrow(InternalServerError.class);
 		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 		MockHttpServletResponse response = mvcResult.getResponse();
 		assertEquals(HttpStatus.EXPECTATION_FAILED.value(), response.getStatus());
@@ -145,11 +146,11 @@ public class EmployeeManagementControllerTest {
 	}
 
 	@Test
-	public void updateEmployeeExceptionTest() throws Exception {
+	public void updateEmployeeExceptionTest() throws Exception  {
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/employee/61dc09368fa7333c4c20e88f")
 				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(val2);
-		Mockito.when(service.updateEmployee(ArgumentMatchers.any())).thenThrow(Exception.class);
+		Mockito.when(service.updateEmployee(ArgumentMatchers.any())).thenThrow(NotFoundException.class);
 		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 		MockHttpServletResponse response = mvcResult.getResponse();
 		assertEquals(HttpStatus.EXPECTATION_FAILED.value(), response.getStatus());
@@ -208,16 +209,6 @@ public class EmployeeManagementControllerTest {
 		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 		MockHttpServletResponse response = mvcResult.getResponse();
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
-	}
-
-	@Test
-	public void generateEmployeesReportExceptionTest() throws Exception {
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/employee/report")
-				.accept(MediaType.APPLICATION_JSON);
-		Mockito.doThrow(Exception.class);
-		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
-		MockHttpServletResponse response = mvcResult.getResponse();
-		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
 	}
 
 	@Test
