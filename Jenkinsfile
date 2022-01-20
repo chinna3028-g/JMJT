@@ -1,32 +1,35 @@
 pipeline {
     agent any
-	
+
+    tools {
+        maven "MAVEN_HOME"
+    }
+
     stages {
-        stage ('Compile Stage') {
-
+        stage('Build') {
             steps {
-                withMaven{
-                    sh 'mvn clean compile'
-                }
+                
+                 bat "mvn clean install"
             }
+
+          
         }
-
-        stage ('Testing Stage') {
-
+         stage('Test') {
             steps {
-                 withMaven {
-                    sh 'mvn test'
-                }
+                
+                 bat "mvn test"
             }
+
+          
         }
-
-
-        stage ('Sonar Stage') {
+        stage('Sonar') {
             steps {
-                 withMaven{
-                    sh 'mvn sonar:sonar'
-                }
+                
+                 bat "mvn sonar:sonar"
             }
+
+          
         }
+        
     }
 }
