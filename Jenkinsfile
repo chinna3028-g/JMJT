@@ -15,8 +15,6 @@ pipeline {
 
                 // To run Maven on a Windows agent, use
                  bat "mvn clean install"
-                 
-                 bat "mvn sonar:sonar"
             }
 
           
