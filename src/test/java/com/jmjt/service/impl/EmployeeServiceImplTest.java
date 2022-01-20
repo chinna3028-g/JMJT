@@ -130,7 +130,7 @@ public class EmployeeServiceImplTest {
 
 	}
 
-	@Test
+	/*@Test
 	public void findEmployeeByIdWithCurrencyExceptionTest4() throws Exception {
 
 		Mockito.when(repository.findById(ArgumentMatchers.anyString()))
@@ -140,7 +140,7 @@ public class EmployeeServiceImplTest {
 
 		service.findEmployeeByIdWithCurrency(DUMMY_ID);
 
-	}
+	}*/
 
 	@Test
 	public void extractRespopnseDataTest() throws Exception {
@@ -221,13 +221,13 @@ public class EmployeeServiceImplTest {
 		assertEquals("30900", emp.getEmployeeSalary());
 	}
 
-	@Test
+	/*@Test
 	public void applySalaryIncrementByIdTest5() throws NotFoundException {
 		Mockito.when(repository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(getEmployee(DUMMY_ID, null)));
 		Mockito.when(repository.save(ArgumentMatchers.any())).thenReturn(getEmployee(DUMMY_ID, "0"));
 		Employee emp = service.applySalaryIncrementById(DUMMY_ID);
 		assertEquals("0", emp.getEmployeeSalary());
-	}
+	}*/
 
 	@Test
 	public void applySalaryIncrementToAllTest1() throws NotFoundException {
@@ -276,7 +276,7 @@ public class EmployeeServiceImplTest {
 		assertEquals("30900", listEmp.get(0).getEmployeeSalary());
 	}
 
-	@Test
+	/*@Test
 	public void applySalaryIncrementToAllTest4() throws NotFoundException {
 		List<Employee> list = new ArrayList<Employee>();
 		list.add(getEmployee(DUMMY_ID, null));
@@ -285,7 +285,7 @@ public class EmployeeServiceImplTest {
 
 		List<Employee> listEmp = service.applySalaryIncrementToAll();
 		assertEquals("0", listEmp.get(0).getEmployeeSalary());
-	}
+	}*/
 
 	@Test
 	public void saveEmployeeTest() throws Exception {

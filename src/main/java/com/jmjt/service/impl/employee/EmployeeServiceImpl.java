@@ -64,7 +64,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public Employee findEmployeeByIdWithCurrency(String id) throws Exception {
 		Optional<Employee> employeeOptinal = employeeRepository.findById(id);
- 
+
 		if (!employeeOptinal.isPresent()) {
 			throw new RecordNotFoundException("Resource Not Found");
 		}
@@ -78,25 +78,22 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
 
-			if (response != null) {
+			Map<String, Object> map = extractRespopnseData(response.getBody());
 
-				Map<String, Object> map = extractRespopnseData(response.getBody());
+			double salary = employee.getEmployeeSalary() != null ? Double.parseDouble(employee.getEmployeeSalary()) : 0;
+			double usd = map.get("USD") != "" ? Double.parseDouble((String) map.get("USD")) : 0.013516;
 
-				double salary = employee.getEmployeeSalary() != null ? Double.parseDouble(employee.getEmployeeSalary())
-						: 0;
-				double usd = map.get("USD") != "" ? Double.parseDouble((String) map.get("USD")) : 0.013516;
-
-				employee.setEmployeeSalary("$" + String.valueOf(salary * usd));
-			}
+			employee.setEmployeeSalary("$" + String.valueOf(salary * usd));
 		} catch (Exception exception) {
 			throw new Exception("Failed To Execute");
 		}
 
 		return employee;
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> extractRespopnseData(String body) throws JsonParseException, JsonMappingException, IOException{
+	public Map<String, Object> extractRespopnseData(String body)
+			throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> map = mapper.readValue(body, Map.class);
 		return map;
@@ -106,7 +103,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	public Employee applySalaryIncrementById(String id) throws NotFoundException {
 		Employee employee = findEmployeeById(id);
 		int increment = 0;
-		int sal = employee.getEmployeeSalary() != null ? Integer.parseInt(employee.getEmployeeSalary()) : 0;
+		int sal = Integer.parseInt(employee.getEmployeeSalary());
 		if (sal <= 15000) {
 			// incrementing salary 5%
 			increment += (sal * 5) / 100;
@@ -135,7 +132,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		List<Employee> listEmployees = employeeRepository.findAll();
 		for (Employee employee : listEmployees) {
 			int increment = 0;
-			int sal = employee.getEmployeeSalary() != null ? Integer.parseInt(employee.getEmployeeSalary()) : 0;
+			int sal = Integer.parseInt(employee.getEmployeeSalary());
 			if (sal < 15000) {
 				// incrementing salary 5%
 				increment += (sal * 5) / 100;
@@ -212,8 +209,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		} catch (Exception e) {
 			throw new Exception("Report Not able to generate");
 		} finally {
-			if (writer != null)
-				writer.close();
+			writer.close();
 		}
 
 	}
@@ -246,8 +242,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		} catch (Exception e) {
 			throw new Exception("Report Not able to generate");
 		} finally {
-			if (writer != null)
-				writer.close();
+			writer.close();
 		}
 	}
 
