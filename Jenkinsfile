@@ -1,4 +1,4 @@
-gktpipeline {
+pipeline {
     agent any
 	
     stages {
