@@ -219,27 +219,25 @@ public class EmployeeServiceImpl implements EmployeeService {
 		List<Employee> listEmployees = employeeRepository.findAll();
 		PrintWriter writer = null;
 		try {
-			if (listEmployees != null) {
-				File file = new File(util.getFileName(listEmployees.size()));
-				writer = new PrintWriter(file);
+			File file = new File(util.getFileName(listEmployees.size()));
+			writer = new PrintWriter(file);
 
-				writer.write(
-						"Employee Id\t\t\t\t\tEmployee Name\t\t\t\tEmployee Desognation\tEmployee DOB\tEmployee Salary");
+			writer.write(
+					"Employee Id\t\t\t\t\tEmployee Name\t\t\t\tEmployee Desognation\tEmployee DOB\tEmployee Salary");
+			writer.println();
+			for (Employee emp : listEmployees) {
+				writer.write(emp.getId());
+				writer.print("\t");
+				writer.write(emp.getEmployeeName());
+				writer.print("\t\t");
+				writer.write(emp.getEmployeeDesignation());
+				writer.print("\t\t\t\t");
+				writer.write(emp.getEmployeeDOB());
+				writer.print("\t");
+				writer.write(emp.getEmployeeSalary());
 				writer.println();
-				for (Employee emp : listEmployees) {
-					writer.write(emp.getId());
-					writer.print("\t");
-					writer.write(emp.getEmployeeName());
-					writer.print("\t\t");
-					writer.write(emp.getEmployeeDesignation());
-					writer.print("\t\t\t\t");
-					writer.write(emp.getEmployeeDOB());
-					writer.print("\t");
-					writer.write(emp.getEmployeeSalary());
-					writer.println();
-				}
-				writer.flush();
 			}
+			writer.flush();
 		} catch (Exception e) {
 			throw new InternalServerError(ERRPRMSG);
 		} finally {
