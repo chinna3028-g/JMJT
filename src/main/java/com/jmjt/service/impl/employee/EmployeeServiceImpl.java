@@ -20,7 +20,6 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jmjt.dao.EmployeeRepository;
 import com.jmjt.error.InternalServerError;
-import com.jmjt.error.NotFoundException;
 import com.jmjt.error.RecordNotFoundException;
 import com.jmjt.mapper.Mapper;
 import com.jmjt.model.Employee;
@@ -52,21 +51,21 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public Employee findEmployeeById(String id) throws RecordNotFoundException {
+	public Employee findEmployeeById(String id) throws InternalServerError {
 		Optional<Employee> employee = employeeRepository.findById(id);
 
 		if (!employee.isPresent()) {
-			throw new RecordNotFoundException("Resource Not Found");
+			throw new InternalServerError("Resource Not Found");
 		}
 		return employee.get();
 	}
 
 	@Override
-	public Employee findEmployeeByIdWithCurrency(String id) throws InternalServerError, RecordNotFoundException {
+	public Employee findEmployeeByIdWithCurrency(String id) throws InternalServerError {
 		Optional<Employee> employeeOptinal = employeeRepository.findById(id);
 
 		if (!employeeOptinal.isPresent()) {
-			throw new RecordNotFoundException("Resource Not Found");
+			throw new InternalServerError("Resource Not Found");
 		}
 		Employee employee = employeeOptinal.get();
 		HttpHeaders headers = new HttpHeaders();
@@ -99,7 +98,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public Employee applySalaryIncrementById(String id) throws NotFoundException, RecordNotFoundException {
+	public Employee applySalaryIncrementById(String id) throws InternalServerError {
 		Employee employee = findEmployeeById(id);
 		int increment = 0;
 		int sal = employee.getEmployeeSalary() != null ? Integer.parseInt(employee.getEmployeeSalary()) : 0;
@@ -170,13 +169,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	public Employee updateEmployee(EmployeeUpdateRequest updateEmployeeRequest)
-			throws NotFoundException, RecordNotFoundException {
+			throws InternalServerError {
 		findEmployeeById(updateEmployeeRequest.getEmployeeId());
 		return employeeRepository.save(mapper.mapEmployeeUpdateRequest(updateEmployeeRequest));
 	}
 
 	@Override
-	public void deleteEmployeeById(String id) throws NotFoundException, RecordNotFoundException {
+	public void deleteEmployeeById(String id) throws InternalServerError {
 		findEmployeeById(id);
 		employeeRepository.deleteById(String.valueOf(id));
 	}
@@ -219,27 +218,25 @@ public class EmployeeServiceImpl implements EmployeeService {
 		List<Employee> listEmployees = employeeRepository.findAll();
 		PrintWriter writer = null;
 		try {
-			if (listEmployees != null) {
-				File file = new File(util.getFileName(listEmployees.size()));
-				writer = new PrintWriter(file);
+			File file = new File(util.getFileName(listEmployees.size()));
+			writer = new PrintWriter(file);
 
-				writer.write(
-						"Employee Id\t\t\t\t\tEmployee Name\t\t\t\tEmployee Desognation\tEmployee DOB\tEmployee Salary");
+			writer.write(
+					"Employee Id\t\t\t\t\tEmployee Name\t\t\t\tEmployee Desognation\tEmployee DOB\tEmployee Salary");
+			writer.println();
+			for (Employee emp : listEmployees) {
+				writer.write(emp.getId());
+				writer.print("\t");
+				writer.write(emp.getEmployeeName());
+				writer.print("\t\t");
+				writer.write(emp.getEmployeeDesignation());
+				writer.print("\t\t\t\t");
+				writer.write(emp.getEmployeeDOB());
+				writer.print("\t");
+				writer.write(emp.getEmployeeSalary());
 				writer.println();
-				for (Employee emp : listEmployees) {
-					writer.write(emp.getId());
-					writer.print("\t");
-					writer.write(emp.getEmployeeName());
-					writer.print("\t\t");
-					writer.write(emp.getEmployeeDesignation());
-					writer.print("\t\t\t\t");
-					writer.write(emp.getEmployeeDOB());
-					writer.print("\t");
-					writer.write(emp.getEmployeeSalary());
-					writer.println();
-				}
-				writer.flush();
 			}
+			writer.flush();
 		} catch (Exception e) {
 			throw new InternalServerError(ERRPRMSG);
 		} finally {
