@@ -14,10 +14,10 @@ pipeline {
                 git branch: 'main', credentialsId: 'bf1f2b8e-926b-4d3f-9b2b-543247e82ebf', url: 'https://github.com/chinna3028/JMJT.git'
             }
         }
-        stage ('Clean, Installand Compile Stage') {
+        stage ('Clean, Install Stage') {
 
             steps {
-                bat 'mvn clean install compile'
+                bat 'mvn clean install'
             }
         }
 

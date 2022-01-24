@@ -4,9 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.time.Instant;
-import java.util.Calendar;
-import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,17 +18,21 @@ public class JMJTUtilTest {
 	@InjectMocks
 	JMJTUtil util;
 
+	private String DUMMY_ID = "61dc04a78fa73329e8842caa";
+
 	@Before
 	public void init() throws NoSuchAlgorithmException, InvalidKeySpecException {
 		MockitoAnnotations.initMocks(this);
 	}
 
 	@Test
-	public void getFileNameTest() {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(Date.from(Instant.now()));
-		String fileName = "reports\\" + String.format("employeesReport-%1$tY-%1$tm-%1$td-%1$tk-%1$tS-%1$tp.txt", cal);
-		assertEquals(fileName, util.getFileName());
+	public void getFileNameWithEmployeeIDTest() {
+		assertEquals("reports\\" + "employeeReport-" + DUMMY_ID + ".txt", util.getFileName(DUMMY_ID));
+	}
+
+	@Test
+	public void getFileNameWithLengthTest() {
+		assertEquals("reports\\" + "employeeReport-1.txt", util.getFileName(1));
 	}
 
 }
