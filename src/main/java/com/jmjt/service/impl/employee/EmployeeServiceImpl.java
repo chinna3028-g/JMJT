@@ -43,8 +43,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Autowired
 	private RestTemplate restTemplate;
-	
-	private static final String ERRPRMSG="Report Not able to generate";
+
+	private static final String ERRPRMSG = "Report Not able to generate";
 
 	@Override
 	public List<Employee> fetchAllEmployees() {
@@ -78,16 +78,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
 
-			
+			Map<String, Object> map = extractRespopnseData(response.getBody());
 
-				Map<String, Object> map = extractRespopnseData(response.getBody());
+			double salary = employee.getEmployeeSalary() != null ? Double.parseDouble(employee.getEmployeeSalary()) : 0;
+			double usd = map.get("USD") != "" ? Double.parseDouble((String) map.get("USD")) : 0.013516;
 
-				double salary = employee.getEmployeeSalary() != null ? Double.parseDouble(employee.getEmployeeSalary())
-						: 0;
-				double usd = map.get("USD") != "" ? Double.parseDouble((String) map.get("USD")) : 0.013516;
+			employee.setEmployeeSalary("$" + salary * usd);
 
-				employee.setEmployeeSalary("$" + salary * usd);
-			
 		} catch (Exception exception) {
 			throw new InternalServerError("Failed To Execute");
 		}
@@ -96,8 +93,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> extractRespopnseData(String body)
-			throws IOException {
+	public Map<String, Object> extractRespopnseData(String body) throws IOException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		return objectMapper.readValue(body, Map.class);
 	}
@@ -173,7 +169,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public Employee updateEmployee(EmployeeUpdateRequest updateEmployeeRequest) throws NotFoundException, RecordNotFoundException {
+	public Employee updateEmployee(EmployeeUpdateRequest updateEmployeeRequest)
+			throws NotFoundException, RecordNotFoundException {
 		findEmployeeById(updateEmployeeRequest.getEmployeeId());
 		return employeeRepository.save(mapper.mapEmployeeUpdateRequest(updateEmployeeRequest));
 	}
@@ -187,10 +184,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public void generateEmployeeReportById(String employeeId) throws InternalServerError, RecordNotFoundException {
 		Employee employee = findEmployeeById(employeeId);
-
-		File file = new File(util.getFileName());
-		try (PrintWriter writer = new PrintWriter(file)) {
-			
+		PrintWriter writer = null;
+		try {
+			File file = new File(util.getFileName(employeeId));
+			writer = new PrintWriter(file);
 			writer.write(
 					"Employee Id\t\t\t\t\tEmployee Name\t\t\t\tEmployee Desognations\tEmployee DOB\tEmployee Salary");
 			writer.println();
@@ -210,35 +207,44 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 		} catch (Exception e) {
 			throw new InternalServerError(ERRPRMSG);
-		} 
+		} finally {
+			if (writer != null)
+				writer.close();
+		}
 
 	}
 
 	@Override
 	public void generateEmployeesReport() throws InternalServerError {
 		List<Employee> listEmployees = employeeRepository.findAll();
-		File file = new File(util.getFileName());
-		try (PrintWriter writer = new PrintWriter(file)) {
+		PrintWriter writer = null;
+		try {
+			if (listEmployees != null) {
+				File file = new File(util.getFileName(listEmployees.size()));
+				writer = new PrintWriter(file);
 
-			writer.write(
-					"Employee Id\t\t\t\t\tEmployee Name\t\t\t\tEmployee Desognation\tEmployee DOB\tEmployee Salary");
-			writer.println();
-			for (Employee emp : listEmployees) {
-				writer.write(emp.getId());
-				writer.print("\t");
-				writer.write(emp.getEmployeeName());
-				writer.print("\t\t");
-				writer.write(emp.getEmployeeDesignation());
-				writer.print("\t\t\t\t");
-				writer.write(emp.getEmployeeDOB());
-				writer.print("\t");
-				writer.write(emp.getEmployeeSalary());
+				writer.write(
+						"Employee Id\t\t\t\t\tEmployee Name\t\t\t\tEmployee Desognation\tEmployee DOB\tEmployee Salary");
 				writer.println();
+				for (Employee emp : listEmployees) {
+					writer.write(emp.getId());
+					writer.print("\t");
+					writer.write(emp.getEmployeeName());
+					writer.print("\t\t");
+					writer.write(emp.getEmployeeDesignation());
+					writer.print("\t\t\t\t");
+					writer.write(emp.getEmployeeDOB());
+					writer.print("\t");
+					writer.write(emp.getEmployeeSalary());
+					writer.println();
+				}
+				writer.flush();
 			}
-			writer.flush();
-
 		} catch (Exception e) {
 			throw new InternalServerError(ERRPRMSG);
+		} finally {
+			if (writer != null)
+				writer.close();
 		}
 	}
 
