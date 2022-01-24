@@ -20,7 +20,6 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jmjt.dao.EmployeeRepository;
 import com.jmjt.error.InternalServerError;
-import com.jmjt.error.RecordNotFoundException;
 import com.jmjt.mapper.Mapper;
 import com.jmjt.model.Employee;
 import com.jmjt.request.EmployeeCreateRequest;
@@ -181,7 +180,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public void generateEmployeeReportById(String employeeId) throws InternalServerError, RecordNotFoundException {
+	public void generateEmployeeReportById(String employeeId) throws InternalServerError {
 		Employee employee = findEmployeeById(employeeId);
 		PrintWriter writer = null;
 		try {
