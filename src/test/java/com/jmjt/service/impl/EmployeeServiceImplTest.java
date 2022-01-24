@@ -223,14 +223,13 @@ public class EmployeeServiceImplTest {
 		assertEquals("30900", emp.getEmployeeSalary());
 	}
 
-	/*
-	 * @Test public void applySalaryIncrementByIdTest5() throws NotFoundException {
-	 * Mockito.when(repository.findById(ArgumentMatchers.any())).thenReturn(Optional
-	 * .of(getEmployee(DUMMY_ID, null)));
-	 * Mockito.when(repository.save(ArgumentMatchers.any())).thenReturn(getEmployee(
-	 * DUMMY_ID, "0")); Employee emp = service.applySalaryIncrementById(DUMMY_ID);
-	 * assertEquals("0", emp.getEmployeeSalary()); }
-	 */
+	@Test
+	public void applySalaryIncrementByIdTest5() throws NotFoundException {
+		Mockito.when(repository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(getEmployee(DUMMY_ID, null)));
+		Mockito.when(repository.save(ArgumentMatchers.any())).thenReturn(getEmployee(DUMMY_ID, "0"));
+		Employee emp = service.applySalaryIncrementById(DUMMY_ID);
+		assertEquals("0", emp.getEmployeeSalary());
+	}
 
 	@Test
 	public void applySalaryIncrementToAllTest1() throws NotFoundException {
@@ -279,16 +278,16 @@ public class EmployeeServiceImplTest {
 		assertEquals("30900", listEmp.get(0).getEmployeeSalary());
 	}
 
-	/*
-	 * @Test public void applySalaryIncrementToAllTest4() throws NotFoundException {
-	 * List<Employee> list = new ArrayList<Employee>();
-	 * list.add(getEmployee(DUMMY_ID, null));
-	 * 
-	 * Mockito.when(repository.findAll()).thenReturn(list);
-	 * 
-	 * List<Employee> listEmp = service.applySalaryIncrementToAll();
-	 * assertEquals("0", listEmp.get(0).getEmployeeSalary()); }
-	 */
+	@Test
+	public void applySalaryIncrementToAllTest4() throws NotFoundException {
+		List<Employee> list = new ArrayList<Employee>();
+		list.add(getEmployee(DUMMY_ID, null));
+
+		Mockito.when(repository.findAll()).thenReturn(list);
+
+		List<Employee> listEmp = service.applySalaryIncrementToAll();
+		assertEquals("0", listEmp.get(0).getEmployeeSalary());
+	}
 
 	@Test
 	public void saveEmployeeTest() throws Exception {
@@ -340,7 +339,7 @@ public class EmployeeServiceImplTest {
 				.thenReturn(Optional.of(getEmployee(DUMMY_ID, "14000")));
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(Date.from(Instant.now()));
-		Mockito.when(util.getFileName(DUMMY_ID)).thenReturn("reports\\employeesReport-"+DUMMY_ID+".txt");
+		Mockito.when(util.getFileName(DUMMY_ID)).thenReturn("reports\\employeesReport-" + DUMMY_ID + ".txt");
 
 		service.generateEmployeeReportById(DUMMY_ID);
 	}
@@ -359,7 +358,7 @@ public class EmployeeServiceImplTest {
 		List<Employee> list = new ArrayList<Employee>();
 		list.add(getEmployee(DUMMY_ID, "15000"));
 		Mockito.when(repository.findAll()).thenReturn(list);
-		Mockito.when(util.getFileName(list.size())).thenReturn("reports\\employeesReport-"+list.size()+".txt");
+		Mockito.when(util.getFileName(list.size())).thenReturn("reports\\employeesReport-" + list.size() + ".txt");
 
 		service.generateEmployeesReport();
 	}
@@ -370,6 +369,15 @@ public class EmployeeServiceImplTest {
 		list.add(getEmployee(DUMMY_ID, "15000"));
 		Mockito.when(repository.findAll()).thenReturn(list);
 		Mockito.when(util.getFileName(list.size())).thenReturn(null);
+
+		service.generateEmployeesReport();
+	}
+
+	@Test
+	public void generateEmployeesReportTest3() throws Exception {
+		List<Employee> list = new ArrayList<Employee>();
+		list.add(getEmployee(DUMMY_ID, "15000"));
+		Mockito.when(repository.findAll()).thenReturn(null);
 
 		service.generateEmployeesReport();
 	}
