@@ -62,7 +62,7 @@ public class EmployeeManagementControllerTest {
 	}
 
 	@Test
-	public void findEmployeeByIdTest() throws Exception { 
+	public void findEmployeeByIdTest() throws Exception {
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/employee/61dc09368fa7333c4c20e88f")
 				.accept(MediaType.APPLICATION_JSON);
 		Mockito.when(service.findEmployeeById(ArgumentMatchers.anyString())).thenReturn(new Employee());
@@ -101,11 +101,12 @@ public class EmployeeManagementControllerTest {
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void findEmployeeByIdWithCurrencyExceptionTest() throws Exception {
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/employee/61dc09368fa7333c4c20e88f/usd")
 				.accept(MediaType.APPLICATION_JSON);
-		Mockito.when(service.findEmployeeByIdWithCurrency(ArgumentMatchers.anyString())).thenThrow(InternalServerError.class);
+		Mockito.when(service.findEmployeeByIdWithCurrency(ArgumentMatchers.anyString()))
+				.thenThrow(InternalServerError.class);
 		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 		MockHttpServletResponse response = mvcResult.getResponse();
 		assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
@@ -194,7 +195,7 @@ public class EmployeeManagementControllerTest {
 	public void deleteByIdExceptionTest() throws Exception {
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/employee/61dc09368fa7333c4c20e88f")
 				.accept(MediaType.APPLICATION_JSON).header("api-version", 1);
-		Mockito.doThrow(InternalServerError.class);
+		Mockito.doThrow(Exception.class);
 		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 		MockHttpServletResponse response = mvcResult.getResponse();
 		assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
@@ -207,6 +208,16 @@ public class EmployeeManagementControllerTest {
 		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 		MockHttpServletResponse response = mvcResult.getResponse();
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
+	}
+	
+	@Test
+	public void generateEmployeesReportExceptionTest() throws Exception {
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/employee/report")
+				.accept(MediaType.APPLICATION_JSON);
+		Mockito.doThrow(Exception.class);
+		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+		MockHttpServletResponse response = mvcResult.getResponse();
+		assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
 	}
 
 	@Test

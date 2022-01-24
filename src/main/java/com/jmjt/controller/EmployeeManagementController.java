@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jmjt.error.InternalServerError;
-import com.jmjt.error.NotFoundException;
 import com.jmjt.error.RecordNotFoundException;
 import com.jmjt.model.Employee;
 import com.jmjt.request.EmployeeCreateRequest;
@@ -43,13 +42,13 @@ public class EmployeeManagementController {
 	}
 
 	@GetMapping("/{id}/usd")
-	public ResponseEntity<Employee> findEmployeeByIdWithCurrency(@PathVariable String id) throws Exception {
+	public ResponseEntity<Employee> findEmployeeByIdWithCurrency(@PathVariable String id) {
 		Employee emp = null;
 		try {
 			emp = employeeService.findEmployeeByIdWithCurrency(id);
-		} catch (Exception exception) {
-			throw new Exception("Failed To Execute");
-		} 
+		} catch (InternalServerError exception) {
+			throw new RecordNotFoundException("Resource Not Found");
+		}
 		return ResponseEntity.status(200).body(emp);
 	}
 
@@ -58,7 +57,7 @@ public class EmployeeManagementController {
 		Employee emp = null;
 		try {
 			emp = employeeService.saveEmployee(employeeCreateRequest);
-		} catch (Exception exception) {
+		} catch (InternalServerError exception) {
 			return ResponseEntity.status(417).body(emp);
 		}
 		return ResponseEntity.status(201).body(emp);
@@ -70,7 +69,7 @@ public class EmployeeManagementController {
 		Employee emp = null;
 		try {
 			emp = employeeService.updateEmployee(employeeUpdateRequest);
-		} catch (Exception exception) {
+		} catch (InternalServerError exception) {
 			return ResponseEntity.status(417).body(emp);
 		}
 		return ResponseEntity.status(200).body(emp);
@@ -86,14 +85,14 @@ public class EmployeeManagementController {
 		Employee emp = null;
 		try {
 			emp = employeeService.applySalaryIncrementById(id);
-		} catch (Exception exception) {
+		} catch (InternalServerError exception) {
 			return ResponseEntity.status(404).body(emp);
 		}
 		return ResponseEntity.status(200).body(emp);
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<String> deleteEmployeeById(@PathVariable String id) throws NotFoundException {
+	public ResponseEntity<String> deleteEmployeeById(@PathVariable String id) {
 		try {
 			employeeService.deleteEmployeeById(id);
 		} catch (Exception exception) {
@@ -103,8 +102,12 @@ public class EmployeeManagementController {
 	}
 
 	@GetMapping("/report")
-	public ResponseEntity<String> generateEmployeesReport() throws InternalServerError {
-		employeeService.generateEmployeesReport();
+	public ResponseEntity<String> generateEmployeesReport() {
+		try {
+			employeeService.generateEmployeesReport();
+		} catch (Exception e) {
+			return ResponseEntity.status(204).body("Failed To generate report");
+		}
 
 		return ResponseEntity.status(200).body("Generated Successfully");
 	}
