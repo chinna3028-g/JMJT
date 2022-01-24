@@ -101,6 +101,7 @@ public class EmployeeManagementControllerTest {
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 	}
 
+	@Test
 	public void findEmployeeByIdWithCurrencyExceptionTest() throws Exception {
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/employee/61dc09368fa7333c4c20e88f/usd")
 				.accept(MediaType.APPLICATION_JSON);
@@ -207,6 +208,16 @@ public class EmployeeManagementControllerTest {
 		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 		MockHttpServletResponse response = mvcResult.getResponse();
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
+	}
+	
+	@Test
+	public void generateEmployeesReportExceptionTest() throws Exception {
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/employee/report")
+				.accept(MediaType.APPLICATION_JSON);
+		Mockito.doThrow(Exception.class);
+		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+		MockHttpServletResponse response = mvcResult.getResponse();
+		assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
 	}
 
 	@Test

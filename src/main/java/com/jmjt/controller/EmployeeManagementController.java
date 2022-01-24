@@ -102,8 +102,12 @@ public class EmployeeManagementController {
 	}
 
 	@GetMapping("/report")
-	public ResponseEntity<String> generateEmployeesReport() throws InternalServerError {
-		employeeService.generateEmployeesReport();
+	public ResponseEntity<String> generateEmployeesReport() {
+		try {
+			employeeService.generateEmployeesReport();
+		} catch (Exception e) {
+			return ResponseEntity.status(204).body("Failed To generate report");
+		}
 
 		return ResponseEntity.status(200).body("Generated Successfully");
 	}
