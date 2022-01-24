@@ -3,6 +3,7 @@ package com.jmjt.service.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.time.Instant;
@@ -28,8 +29,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import com.jmjt.dao.EmployeeRepository;
-import com.jmjt.error.NotFoundException;
-import com.jmjt.error.RecordNotFoundException;
+import com.jmjt.error.InternalServerError;
 import com.jmjt.mapper.Mapper;
 import com.jmjt.model.Employee;
 import com.jmjt.request.EmployeeCreateRequest;
@@ -72,13 +72,13 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void findEmployeeByIdTest() throws NotFoundException {
+	public void findEmployeeByIdTest() throws InternalServerError {
 		Mockito.when(repository.findById(ArgumentMatchers.anyString())).thenReturn(Optional.of(new Employee()));
 		service.findEmployeeById(DUMMY_ID);
 	}
 
 	@Test
-	public void findEmployeeByIdWithCurrencyTest() throws Exception {
+	public void findEmployeeByIdWithCurrencyTest() throws InternalServerError {
 		Mockito.when(repository.findById(ArgumentMatchers.anyString()))
 				.thenReturn(Optional.of(getEmployee(DUMMY_ID, "14700")));
 
@@ -90,8 +90,8 @@ public class EmployeeServiceImplTest {
 		service.findEmployeeByIdWithCurrency(DUMMY_ID);
 	}
 
-	@Test(expected = RecordNotFoundException.class)
-	public void findEmployeeByIdWithCurrencyExceptionTest1() throws Exception {
+	@Test(expected = InternalServerError.class)
+	public void findEmployeeByIdWithCurrencyExceptionTest1() throws InternalServerError {
 
 		Mockito.when(repository.findById(ArgumentMatchers.anyString())).thenReturn(Optional.empty());
 		ResponseEntity<String> entity = new ResponseEntity<String>("{\"USD\":\"0.013516\"}", HttpStatus.ACCEPTED);
@@ -104,7 +104,7 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void findEmployeeByIdWithCurrencyExceptionTest2() throws Exception {
+	public void findEmployeeByIdWithCurrencyExceptionTest2() throws InternalServerError {
 
 		Mockito.when(repository.findById(ArgumentMatchers.anyString()))
 				.thenReturn(Optional.of(getEmployee(DUMMY_ID, null)));
@@ -118,7 +118,7 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void findEmployeeByIdWithCurrencyExceptionTest3() throws Exception {
+	public void findEmployeeByIdWithCurrencyExceptionTest3() throws InternalServerError {
 
 		Mockito.when(repository.findById(ArgumentMatchers.anyString()))
 				.thenReturn(Optional.of(getEmployee(DUMMY_ID, "15000")));
@@ -130,22 +130,19 @@ public class EmployeeServiceImplTest {
 
 	}
 
-	/*
-	 * @Test public void findEmployeeByIdWithCurrencyExceptionTest4() throws
-	 * Exception { Mockito.when(repository.findById(ArgumentMatchers.anyString()))
-	 * .thenReturn(Optional.of(getEmployee(DUMMY_ID, "15000")));
-	 * Mockito.when(restTemplate.exchange(ArgumentMatchers.anyString(),
-	 * ArgumentMatchers.any(HttpMethod.class), ArgumentMatchers.any(),
-	 * ArgumentMatchers.<Class<String>>any())).thenReturn(ResponseEntity.
-	 * ok("{\"name\":\"deepak\", \"USD\":\"21\"}"));
-	 * 
-	 * service.findEmployeeByIdWithCurrency(DUMMY_ID);
-	 * 
-	 * }
-	 */
+	@Test
+	public void findEmployeeByIdWithCurrencyExceptionTest4() throws InternalServerError {
+		Mockito.when(repository.findById(ArgumentMatchers.anyString()))
+				.thenReturn(Optional.of(getEmployee(DUMMY_ID, "15000")));
+		Mockito.when(restTemplate.exchange(ArgumentMatchers.anyString(), ArgumentMatchers.any(HttpMethod.class),
+				ArgumentMatchers.any(), ArgumentMatchers.<Class<String>>any()))
+				.thenReturn(ResponseEntity.ok("{\"name\":\"deepak\", \"USD\":\"21\"}"));
+
+		service.findEmployeeByIdWithCurrency(DUMMY_ID);
+	}
 
 	@Test
-	public void extractRespopnseDataTest() throws Exception {
+	public void extractRespopnseDataTest() throws IOException {
 
 		Map<String, Object> resultMap = service.extractRespopnseData("{\"USD\":\"0.013516\"}");
 
@@ -156,7 +153,7 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test(expected = Exception.class)
-	public void findEmployeeByIdWithCurrencyExceptionTest5() throws Exception {
+	public void findEmployeeByIdWithCurrencyExceptionTest5() throws InternalServerError {
 
 		Mockito.when(repository.findById(ArgumentMatchers.anyString()))
 				.thenReturn(Optional.of(getEmployee(DUMMY_ID, null)));
@@ -168,14 +165,14 @@ public class EmployeeServiceImplTest {
 
 	}
 
-	@Test(expected = RecordNotFoundException.class)
-	public void findEmployeeByIdExceptionTest() throws RecordNotFoundException {
+	@Test(expected = InternalServerError.class)
+	public void findEmployeeByIdExceptionTest() throws InternalServerError {
 		Mockito.when(repository.findById(ArgumentMatchers.anyString())).thenReturn(Optional.empty());
 		service.findEmployeeById(DUMMY_ID);
 	}
 
 	@Test
-	public void applySalaryIncrementByIdTest1() throws NotFoundException {
+	public void applySalaryIncrementByIdTest1() throws InternalServerError {
 		Mockito.when(repository.findById(ArgumentMatchers.any()))
 				.thenReturn(Optional.of(getEmployee(DUMMY_ID, "14000")));
 		Mockito.when(repository.save(ArgumentMatchers.any())).thenReturn(getEmployee(DUMMY_ID, "14700"));
@@ -185,7 +182,7 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void applySalaryIncrementByIdTest3() throws NotFoundException {
+	public void applySalaryIncrementByIdTest3() throws InternalServerError {
 		Mockito.when(repository.findById(ArgumentMatchers.any()))
 				.thenReturn(Optional.of(getEmployee(DUMMY_ID, "15000")));
 		Mockito.when(repository.save(ArgumentMatchers.any())).thenReturn(getEmployee(DUMMY_ID, "15750"));
@@ -195,7 +192,7 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void applySalaryIncrementByIdTest6() throws NotFoundException {
+	public void applySalaryIncrementByIdTest6() throws InternalServerError {
 		Mockito.when(repository.findById(ArgumentMatchers.any()))
 				.thenReturn(Optional.of(getEmployee(DUMMY_ID, "16000")));
 		Mockito.when(repository.save(ArgumentMatchers.any())).thenReturn(getEmployee(DUMMY_ID, "16400"));
@@ -205,7 +202,7 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void applySalaryIncrementByIdTest4() throws NotFoundException {
+	public void applySalaryIncrementByIdTest4() throws InternalServerError {
 		Mockito.when(repository.findById(DUMMY_ID)).thenReturn(Optional.of(getEmployee(DUMMY_ID, "20000")));
 		Mockito.when(repository.save(ArgumentMatchers.any())).thenReturn(getEmployee(DUMMY_ID, "20800"));
 
@@ -214,7 +211,7 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void applySalaryIncrementByIdTest2() throws NotFoundException {
+	public void applySalaryIncrementByIdTest2() throws InternalServerError {
 		Mockito.when(repository.findById(ArgumentMatchers.any()))
 				.thenReturn(Optional.of(getEmployee(DUMMY_ID, "30000")));
 		Mockito.when(repository.save(ArgumentMatchers.any())).thenReturn(getEmployee(DUMMY_ID, "30900"));
@@ -224,7 +221,7 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void applySalaryIncrementByIdTest5() throws NotFoundException {
+	public void applySalaryIncrementByIdTest5() throws InternalServerError {
 		Mockito.when(repository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(getEmployee(DUMMY_ID, null)));
 		Mockito.when(repository.save(ArgumentMatchers.any())).thenReturn(getEmployee(DUMMY_ID, "0"));
 		Employee emp = service.applySalaryIncrementById(DUMMY_ID);
@@ -232,7 +229,7 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void applySalaryIncrementToAllTest1() throws NotFoundException {
+	public void applySalaryIncrementToAllTest1() throws InternalServerError {
 		List<Employee> list = new ArrayList<Employee>();
 		list.add(getEmployee(DUMMY_ID, "14000"));
 		Mockito.when(repository.findAll()).thenReturn(list);
@@ -241,7 +238,7 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void applySalaryIncrementToAllTest2() throws NotFoundException {
+	public void applySalaryIncrementToAllTest2() throws InternalServerError {
 		List<Employee> list = new ArrayList<Employee>();
 		list.add(getEmployee(DUMMY_ID, "15000"));
 		Mockito.when(repository.findAll()).thenReturn(list);
@@ -250,7 +247,7 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void applySalaryIncrementToAllTest5() throws NotFoundException {
+	public void applySalaryIncrementToAllTest5() throws InternalServerError {
 		List<Employee> list = new ArrayList<Employee>();
 		list.add(getEmployee(DUMMY_ID, "16000"));
 		Mockito.when(repository.findAll()).thenReturn(list);
@@ -259,7 +256,7 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void applySalaryIncrementToAllTest6() throws NotFoundException {
+	public void applySalaryIncrementToAllTest6() throws InternalServerError {
 		List<Employee> list = new ArrayList<Employee>();
 		list.add(getEmployee(DUMMY_ID, "24999"));
 		Mockito.when(repository.findAll()).thenReturn(list);
@@ -268,7 +265,7 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void applySalaryIncrementToAllTest3() throws NotFoundException {
+	public void applySalaryIncrementToAllTest3() throws InternalServerError {
 		List<Employee> list = new ArrayList<Employee>();
 		list.add(getEmployee(DUMMY_ID, "30000"));
 
@@ -279,7 +276,7 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void applySalaryIncrementToAllTest4() throws NotFoundException {
+	public void applySalaryIncrementToAllTest4() throws InternalServerError {
 		List<Employee> list = new ArrayList<Employee>();
 		list.add(getEmployee(DUMMY_ID, null));
 
@@ -290,7 +287,7 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void saveEmployeeTest() throws Exception {
+	public void saveEmployeeTest() throws InternalServerError {
 		EmployeeCreateRequest employeeCreateRequest = new EmployeeCreateRequest();
 		employeeCreateRequest.setEmployeeSalary("15000");
 		Mockito.when(mapper.mapEmployeeCreateRequest(ArgumentMatchers.any()))
@@ -300,8 +297,8 @@ public class EmployeeServiceImplTest {
 		assertEquals(DUMMY_ID, emp.getId());
 	}
 
-	@Test(expected = Exception.class)
-	public void saveEmployeeExceptionTest() throws Exception {
+	@Test(expected = InternalServerError.class)
+	public void saveEmployeeExceptionTest() throws InternalServerError {
 		EmployeeCreateRequest employeeCreateRequest = new EmployeeCreateRequest();
 		employeeCreateRequest.setEmployeeSalary("15000");
 		Mockito.when(mapper.mapEmployeeCreateRequest(ArgumentMatchers.any()))
@@ -311,7 +308,7 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void deleteEmployeeByIdTest() throws NotFoundException {
+	public void deleteEmployeeByIdTest() throws InternalServerError {
 		Employee employee = new Employee();
 		employee.setId(DUMMY_ID);
 		Optional<Employee> employeeOpt = Optional.of(employee);
@@ -320,7 +317,7 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void updateEmployeeTest() throws NotFoundException {
+	public void updateEmployeeTest() throws InternalServerError {
 		EmployeeUpdateRequest ur = new EmployeeUpdateRequest();
 		ur.setEmployeeId(DUMMY_ID);
 		Mockito.when(mapper.mapEmployeeUpdateRequest(ArgumentMatchers.any()))
@@ -334,7 +331,7 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void generateEmployeeReportByIdTest1() throws Exception {
+	public void generateEmployeeReportByIdTest1() throws InternalServerError {
 		Mockito.when(repository.findById(ArgumentMatchers.any()))
 				.thenReturn(Optional.of(getEmployee(DUMMY_ID, "14000")));
 		Calendar cal = Calendar.getInstance();
@@ -344,8 +341,8 @@ public class EmployeeServiceImplTest {
 		service.generateEmployeeReportById(DUMMY_ID);
 	}
 
-	@Test(expected = Exception.class)
-	public void generateEmployeeReportByIdTest2() throws Exception {
+	@Test(expected = InternalServerError.class)
+	public void generateEmployeeReportByIdTest2() throws InternalServerError {
 		Mockito.when(repository.findById(ArgumentMatchers.any()))
 				.thenReturn(Optional.of(getEmployee(DUMMY_ID, "14000")));
 
@@ -354,7 +351,7 @@ public class EmployeeServiceImplTest {
 	}
 
 	@Test
-	public void generateEmployeesReportTest1() throws Exception {
+	public void generateEmployeesReportTest1() throws InternalServerError {
 		List<Employee> list = new ArrayList<Employee>();
 		list.add(getEmployee(DUMMY_ID, "15000"));
 		Mockito.when(repository.findAll()).thenReturn(list);
@@ -363,21 +360,12 @@ public class EmployeeServiceImplTest {
 		service.generateEmployeesReport();
 	}
 
-	@Test(expected = Exception.class)
-	public void generateEmployeesReportTest2() throws Exception {
+	@Test(expected = InternalServerError.class)
+	public void generateEmployeesReportTest2() throws InternalServerError {
 		List<Employee> list = new ArrayList<Employee>();
 		list.add(getEmployee(DUMMY_ID, "15000"));
 		Mockito.when(repository.findAll()).thenReturn(list);
 		Mockito.when(util.getFileName(list.size())).thenReturn(null);
-
-		service.generateEmployeesReport();
-	}
-
-	@Test
-	public void generateEmployeesReportTest3() throws Exception {
-		List<Employee> list = new ArrayList<Employee>();
-		list.add(getEmployee(DUMMY_ID, "15000"));
-		Mockito.when(repository.findAll()).thenReturn(null);
 
 		service.generateEmployeesReport();
 	}

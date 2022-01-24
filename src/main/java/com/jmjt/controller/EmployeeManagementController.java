@@ -36,7 +36,7 @@ public class EmployeeManagementController {
 		Employee emp = null;
 		try {
 			emp = employeeService.findEmployeeById(id);
-		} catch (RecordNotFoundException exception) {
+		} catch (InternalServerError exception) {
 			throw new RecordNotFoundException("Resource Not Found");
 		}
 		return ResponseEntity.status(200).body(emp);
@@ -49,7 +49,7 @@ public class EmployeeManagementController {
 			emp = employeeService.findEmployeeByIdWithCurrency(id);
 		} catch (Exception exception) {
 			throw new Exception("Failed To Execute");
-		}
+		} 
 		return ResponseEntity.status(200).body(emp);
 	}
 
@@ -104,8 +104,8 @@ public class EmployeeManagementController {
 
 	@GetMapping("/report")
 	public ResponseEntity<String> generateEmployeesReport() throws InternalServerError {
-			employeeService.generateEmployeesReport();
-		
+		employeeService.generateEmployeesReport();
+
 		return ResponseEntity.status(200).body("Generated Successfully");
 	}
 
