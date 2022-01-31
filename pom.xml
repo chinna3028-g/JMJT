@@ -13,7 +13,7 @@
 
 	<groupId>com.jmjt</groupId>
 	<artifactId>JMJT</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<!-- <version>0.0.1-SNAPSHOT</version> -->
 	<name>JMJT</name>
 	<description>Spring Boot APP</description>
 
@@ -115,6 +115,7 @@
 				</executions>
 			</plugin>
 		</plugins>
+		<finalName>JMJT</finalName>
 	</build>
 
 </project>
