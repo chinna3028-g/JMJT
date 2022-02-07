@@ -1,4 +1,4 @@
-package com.jmjt.controller;
+/*package com.jmjt.controller;
 
 import static org.junit.Assert.assertEquals;
 
@@ -231,3 +231,4 @@ public class EmployeeManagementControllerTest {
 	}
 
 }
+*/

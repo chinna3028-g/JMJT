@@ -1,4 +1,4 @@
-package com.jmjt.util;
+/*package com.jmjt.util;
 
 import static org.junit.Assert.assertEquals;
 
@@ -36,3 +36,4 @@ public class JMJTUtilTest {
 	}
 
 }
+*/

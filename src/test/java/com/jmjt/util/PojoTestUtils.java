@@ -1,4 +1,4 @@
-package com.jmjt.util;
+/*package com.jmjt.util;
 
 import com.openpojo.reflection.impl.PojoClassFactory;
 import com.openpojo.validation.Validator;
@@ -17,4 +17,4 @@ public class PojoTestUtils {
 	public static void validateAccessors(final Class<?> clazz) {
 		ACCESSOR_VALIDATOR.validate(PojoClassFactory.getPojoClass(clazz));
 	}
-}
+}*/
