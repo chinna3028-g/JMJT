@@ -1,4 +1,4 @@
-/*package com.jmjt;
+package com.jmjt;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -28,4 +28,3 @@ public class JMJTApplicationTest {
 	}
 
 }
-*/

@@ -1,4 +1,4 @@
-/*package com.jmjt.mapper;
+package com.jmjt.mapper;
 
 import static org.junit.Assert.assertEquals;
 
@@ -97,4 +97,3 @@ public class MapperTest {
 		return request;
 	}
 }
-*/

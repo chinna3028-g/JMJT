@@ -1,4 +1,4 @@
-/*package com.jmjt.service.impl;
+package com.jmjt.service.impl;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -89,4 +89,3 @@ public class BasicServiceImplNegativeTest {
 		basicServiceImpl.update(ur);
 	}
 }
-*/

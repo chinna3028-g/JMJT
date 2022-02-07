@@ -52,7 +52,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public Employee findEmployeeById(String id) throws RecordNotFoundException {
+	public Employee findEmployeeById(String id) {
 		Optional<Employee> employee = employeeRepository.findById(id);
 
 		if (!employee.isPresent()) {
@@ -62,7 +62,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public Employee findEmployeeByIdWithCurrency(String id) throws InternalServerError, RecordNotFoundException {
+	public Employee findEmployeeByIdWithCurrency(String id) throws InternalServerError {
 		Optional<Employee> employeeOptinal = employeeRepository.findById(id);
 
 		if (!employeeOptinal.isPresent()) {
@@ -99,7 +99,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public Employee applySalaryIncrementById(String id) throws NotFoundException, RecordNotFoundException {
+	public Employee applySalaryIncrementById(String id) throws NotFoundException {
 		Employee employee = findEmployeeById(id);
 		int increment = 0;
 		int sal = employee.getEmployeeSalary() != null ? Integer.parseInt(employee.getEmployeeSalary()) : 0;
@@ -170,24 +170,25 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	public Employee updateEmployee(EmployeeUpdateRequest updateEmployeeRequest)
-			throws NotFoundException, RecordNotFoundException {
+			throws NotFoundException {
 		findEmployeeById(updateEmployeeRequest.getEmployeeId());
 		return employeeRepository.save(mapper.mapEmployeeUpdateRequest(updateEmployeeRequest));
 	}
 
 	@Override
-	public void deleteEmployeeById(String id) throws NotFoundException, RecordNotFoundException {
+	public void deleteEmployeeById(String id) throws NotFoundException {
 		findEmployeeById(id);
 		employeeRepository.deleteById(String.valueOf(id));
 	}
 
 	@Override
-	public void generateEmployeeReportById(String employeeId) throws InternalServerError, RecordNotFoundException {
+	public void generateEmployeeReportById(String employeeId) throws InternalServerError {
 		Employee employee = findEmployeeById(employeeId);
-		PrintWriter writer = null;
-		try {
-			File file = new File(util.getFileName(employeeId));
-			writer = new PrintWriter(file);
+		
+		File file = new File(util.getFileName(employeeId));
+		try(PrintWriter writer = new PrintWriter(file)) {
+			
+			
 			writer.write(
 					"Employee Id\t\t\t\t\tEmployee Name\t\t\t\tEmployee Desognations\tEmployee DOB\tEmployee Salary");
 			writer.println();
@@ -207,9 +208,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 		} catch (Exception e) {
 			throw new InternalServerError(ERRPRMSG);
-		} finally {
-			if (writer != null)
-				writer.close();
 		}
 
 	}
@@ -217,11 +215,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public void generateEmployeesReport() throws InternalServerError {
 		List<Employee> listEmployees = employeeRepository.findAll();
-		PrintWriter writer = null;
-		try {
-			if (listEmployees != null) {
-				File file = new File(util.getFileName(listEmployees.size()));
-				writer = new PrintWriter(file);
+		File file = new File(util.getFileName(listEmployees.size()));
+		try (PrintWriter writer = new PrintWriter(file);){
 
 				writer.write(
 						"Employee Id\t\t\t\t\tEmployee Name\t\t\t\tEmployee Desognation\tEmployee DOB\tEmployee Salary");
@@ -239,12 +234,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 					writer.println();
 				}
 				writer.flush();
-			}
+			
 		} catch (Exception e) {
 			throw new InternalServerError(ERRPRMSG);
-		} finally {
-			if (writer != null)
-				writer.close();
 		}
 	}
 

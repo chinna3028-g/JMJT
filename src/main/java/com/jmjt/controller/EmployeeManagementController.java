@@ -43,12 +43,12 @@ public class EmployeeManagementController {
 	}
 
 	@GetMapping("/{id}/usd")
-	public ResponseEntity<Employee> findEmployeeByIdWithCurrency(@PathVariable String id) throws Exception {
+	public ResponseEntity<Employee> findEmployeeByIdWithCurrency(@PathVariable String id) throws InternalServerError {
 		Employee emp = null;
 		try {
 			emp = employeeService.findEmployeeByIdWithCurrency(id);
 		} catch (Exception exception) {
-			throw new Exception("Failed To Execute");
+			throw new InternalServerError("Failed To Execute");
 		}
 		return ResponseEntity.status(200).body(emp);
 	}

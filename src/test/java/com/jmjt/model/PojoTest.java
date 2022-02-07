@@ -1,4 +1,4 @@
-/*package com.jmjt.model;
+package com.jmjt.model;
 
 import org.junit.Test;
 
@@ -26,4 +26,3 @@ public class PojoTest {
 		PojoTestUtils.validateAccessors(BasicsResponse.class);
 	}
 }
-*/

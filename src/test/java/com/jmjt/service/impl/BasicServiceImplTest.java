@@ -1,4 +1,4 @@
-/*package com.jmjt.service.impl;
+package com.jmjt.service.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -137,4 +137,3 @@ public class BasicServiceImplTest {
 	}
 
 }
-*/

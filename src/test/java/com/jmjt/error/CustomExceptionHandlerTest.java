@@ -1,4 +1,4 @@
-/*package com.jmjt.error;
+package com.jmjt.error;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -27,4 +27,3 @@ public class CustomExceptionHandlerTest {
 	}
 
 }
-*/
